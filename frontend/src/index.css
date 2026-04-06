@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Image Scanning animation */
 .scanning::after {
   content: "";
@@ -12,9 +16,8 @@
   height: 100%;
   background-image: linear-gradient(
     to right,
-    rgba(19, 161, 14, 0.2),
-    /* Darker matrix green with full transparency */ rgba(19, 161, 14, 0.8)
-      /* The same green with 80% opacity */
+    rgba(67, 56, 202, 0.2),
+    rgba(67, 56, 202, 0.8)
   );
   animation: scanning 3s ease-in-out infinite;
 }
@@ -32,32 +35,32 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 226 71% 4%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 226 71% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 226 71% 4%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 234 89% 54%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 226 50% 96%;
+    --secondary-foreground: 226 71% 4%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 226 50% 96%;
+    --muted-foreground: 226 10% 44%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 226 50% 96%;
+    --accent-foreground: 226 71% 4%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 226 25% 90%;
+    --input: 226 25% 90%;
+    --ring: 234 89% 54%;
 
     --radius: 0.5rem;
   }
@@ -79,38 +82,69 @@
   .dark {
     color-scheme: dark;
 
-    --background: 222.2 0% 0%;
-    --foreground: 210 40% 98%;
+    --background: 230 15% 5%;
+    --foreground: 226 30% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 230 20% 8%;
+    --card-foreground: 226 30% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 230 20% 8%;
+    --popover-foreground: 226 30% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 234 89% 64%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 230 20% 14%;
+    --secondary-foreground: 226 30% 95%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 230 20% 14%;
+    --muted-foreground: 226 15% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 230 20% 14%;
+    --accent-foreground: 226 30% 95%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 226 30% 95%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 230 20% 16%;
+    --input: 230 20% 16%;
+    --ring: 234 89% 64%;
   }
 }
 
 .sidebar-scrollbar-stable {
   scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
+}
+
+.sidebar-scrollbar-stable::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scrollbar-stable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scrollbar-stable::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+}
+
+.sidebar-scrollbar-stable::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.7);
+}
+
+:is(.dark) .sidebar-scrollbar-stable {
+  scrollbar-color: rgba(82, 82, 91, 0.5) transparent;
+}
+
+:is(.dark) .sidebar-scrollbar-stable::-webkit-scrollbar-thumb {
+  background-color: rgba(82, 82, 91, 0.5);
+}
+
+:is(.dark) .sidebar-scrollbar-stable::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(82, 82, 91, 0.8);
 }
 
 .active-step-shimmer {
@@ -163,9 +197,9 @@
 .working-indicator-bg {
   background: linear-gradient(
     90deg,
-    #f5f3ff 0%,
+    #eef2ff 0%,
     #ffffff 45%,
-    #ede9fe 55%,
+    #e0e7ff 55%,
     #ffffff 100%
   );
   background-size: 220% 100%;
@@ -175,9 +209,9 @@
 :is(.dark) .working-indicator-bg {
   background: linear-gradient(
     90deg,
-    rgba(76, 29, 149, 0.2) 0%,
+    rgba(49, 46, 129, 0.2) 0%,
     rgba(24, 24, 27, 1) 45%,
-    rgba(76, 29, 149, 0.28) 55%,
+    rgba(49, 46, 129, 0.28) 55%,
     rgba(24, 24, 27, 1) 100%
   );
   background-size: 220% 100%;
@@ -195,23 +229,77 @@
   }
 }
 
-@keyframes searchlight {
-  0% {
-    background-position: 140% center;
+/* ── Global transition polish ── */
+*,
+*::before,
+*::after {
+  scroll-behavior: smooth;
+}
+
+/* Smooth sidebar & panel transitions */
+.panel-enter {
+  animation: panelSlideIn 0.25s ease-out;
+}
+
+@keyframes panelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
   }
-  100% {
-    background-position: -40% center;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
   }
-  html, body, #root {
-    @apply h-full;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  body {
-    @apply bg-background text-foreground m-0;
-  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+
+/* Gradient hover button — uses solid indigo (gradients can't CSS-transition smoothly) */
+.btn-gradient-hover {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+.btn-gradient-hover:hover {
+  background-color: #4f46e5 !important;
+  background-image: none !important;
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+}
+
+/* Outline hover for secondary buttons and capsules */
+.btn-outline-hover {
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-outline-hover:hover {
+  border-color: #6366f1 !important;
+  color: #6366f1 !important;
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+/* Card border glow on hover */
+.card-hover-border {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.card-hover-border:hover {
+  border-color: rgba(99, 102, 241, 0.45) !important;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.12);
+}
+
+/* Smooth focus ring */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  transition: outline-offset 0.15s ease;
 }

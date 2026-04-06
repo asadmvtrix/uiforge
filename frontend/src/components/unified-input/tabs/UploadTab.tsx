@@ -189,7 +189,6 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
   } = useDropzone({
     maxFiles: MAX_FILES,
     maxSize: 1024 * 1024 * 20,
-    noClick: true,
     accept: {
       "image/png": [".png"],
       "image/jpeg": [".jpeg"],
@@ -235,7 +234,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
 
   const dropzoneClassName = useMemo(() => {
     const base =
-      "flex flex-1 w-full min-h-[320px] flex-col items-center justify-center p-5 border-2 border-dashed rounded-xl bg-gray-50 dark:bg-zinc-900 text-gray-500 dark:text-zinc-400 outline-none transition-all cursor-pointer";
+      "flex flex-1 w-full min-h-[280px] flex-col items-center justify-center p-5 border border-dashed rounded-lg bg-white dark:bg-zinc-900/50 text-gray-500 dark:text-zinc-400 outline-none transition-all duration-200 cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-[0_0_0_1px_rgba(99,102,241,0.15)]";
     if (isFocused) {
       return `${base} border-blue-500 bg-blue-50 dark:bg-blue-950/30`;
     }
@@ -285,24 +284,22 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
         <div {...getRootProps({ className: dropzoneClassName })} data-testid="upload-dropzone">
           <input data-testid="upload-input" {...getInputProps()} />
           <div className="flex flex-col items-center gap-3">
-            <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-gray-400 dark:text-zinc-500"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-gray-300 dark:text-zinc-600"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
             <div className="text-center">
               <p className="text-gray-700 dark:text-zinc-200 font-medium">
                 Drop up to {MAX_FILES} screenshots or a single video
@@ -316,7 +313,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
               onClick={open}
               className="text-sm text-gray-600 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200 underline"
             >
-              Browse files
+              Browse Files
             </button>
           </div>
         </div>
@@ -356,7 +353,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
                     onClick={handleClear}
                     className="text-xs text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200"
                   >
-                    Clear all
+                    Clear All
                   </button>
                 </div>
                 <div className="mt-1 text-[11px] text-gray-400 dark:text-zinc-500">
@@ -446,7 +443,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
               }}
               className="text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 underline"
             >
-              Add instructions (optional)
+              Add Instructions (Optional)
             </button>
           ) : (
             <div className="w-full max-w-lg">

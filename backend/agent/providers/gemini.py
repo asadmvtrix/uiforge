@@ -279,7 +279,7 @@ class GeminiProviderSession(ProviderSession):
         thinking_level = _get_thinking_level_for_model(self._model)
         config = types.GenerateContentConfig(
             temperature=1.0,
-            max_output_tokens=50000,
+            max_output_tokens=16000,
             system_instruction=self._system_prompt,
             thinking_config=types.ThinkingConfig(
                 thinking_level=cast(Any, thinking_level),

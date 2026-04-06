@@ -14,6 +14,22 @@ interface Props {
 const MOBILE_VIEWPORT_WIDTH = 375;
 export const DESKTOP_VIEWPORT_WIDTH = 1366;
 
+// Ensure generated HTML has a viewport meta tag for responsive rendering
+function ensureViewportMeta(html: string): string {
+  if (!html) return html;
+  const viewportTag = '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+  if (html.includes('name="viewport"') || html.includes("name='viewport'")) {
+    return html;
+  }
+  if (html.includes("<head>")) {
+    return html.replace("<head>", `<head>\n${viewportTag}`);
+  }
+  if (html.includes("<html")) {
+    return html.replace(/<html[^>]*>/, `$&\n<head>${viewportTag}</head>`);
+  }
+  return `${viewportTag}\n${html}`;
+}
+
 function PreviewComponent({
   code,
   device,
@@ -153,8 +169,9 @@ function PreviewComponent({
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe) return;
-    if (iframe.srcdoc !== throttledCode) {
-      iframe.srcdoc = throttledCode;
+    const responsiveCode = ensureViewportMeta(throttledCode);
+    if (iframe.srcdoc !== responsiveCode) {
+      iframe.srcdoc = responsiveCode;
     }
   }, [throttledCode]);
 

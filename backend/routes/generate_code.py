@@ -470,7 +470,7 @@ class PromptCreationStage:
             return prompt_messages
         except Exception:
             await self.throw_error(
-                "Error assembling prompt. Contact support at support@picoapps.xyz"
+                "Error assembling prompt. Please check your configuration and try again."
             )
             raise
 
@@ -600,7 +600,7 @@ class AgenticGenerationStage:
                 e.message
                 + ". Please make sure you have followed the instructions correctly to obtain "
                 "an OpenAI key with GPT vision access: "
-                "https://github.com/abi/screenshot-to-code/blob/main/Troubleshooting.md"
+                "https://github.com/asadmvtrix/uiforge/blob/main/Troubleshooting.md"
                 + (
                     " Alternatively, you can purchase code generation credits directly on this website."
                     if IS_PROD

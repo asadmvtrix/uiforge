@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { Stack } from "../../lib/stacks";
 import { Settings } from "../../types";
+import { AnimatePresence, m } from "framer-motion";
 import UploadTab from "./tabs/UploadTab";
-import UrlTab from "./tabs/UrlTab";
 import TextTab from "./tabs/TextTab";
 import ImportTab from "./tabs/ImportTab";
 
@@ -19,7 +19,7 @@ interface Props {
   setSettings: React.Dispatch<React.SetStateAction<Settings>>;
 }
 
-type InputTab = "upload" | "url" | "text" | "import";
+type InputTab = "upload" | "text" | "import";
 
 function UnifiedInputPane({
   doCreate,
@@ -38,13 +38,13 @@ function UnifiedInputPane({
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4">
+    <div className="w-full max-w-3xl mx-auto">
       <Tabs
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as InputTab)}
         className="w-full"
       >
-        <TabsList className="grid w-full grid-cols-4 mb-6">
+        <TabsList className="grid w-full grid-cols-3 mb-5">
           <TabsTrigger
             value="upload"
             className="flex items-center gap-2"
@@ -52,14 +52,6 @@ function UnifiedInputPane({
           >
             <UploadIcon />
             <span className="hidden sm:inline">Upload</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="url"
-            className="flex items-center gap-2"
-            data-testid="tab-url"
-          >
-            <UrlIcon />
-            <span className="hidden sm:inline">URL</span>
           </TabsTrigger>
           <TabsTrigger
             value="text"
@@ -79,34 +71,33 @@ function UnifiedInputPane({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="upload" className="mt-0">
-          <UploadTab
-            doCreate={doCreate}
-            stack={settings.generatedCodeConfig}
-            setStack={setStack}
-          />
-        </TabsContent>
-
-        <TabsContent value="url" className="mt-0">
-          <UrlTab
-            doCreate={doCreate}
-            screenshotOneApiKey={settings.screenshotOneApiKey}
-            stack={settings.generatedCodeConfig}
-            setStack={setStack}
-          />
-        </TabsContent>
-
-        <TabsContent value="text" className="mt-0">
-          <TextTab
-            doCreateFromText={doCreateFromText}
-            stack={settings.generatedCodeConfig}
-            setStack={setStack}
-          />
-        </TabsContent>
-
-        <TabsContent value="import" className="mt-0">
-          <ImportTab importFromCode={importFromCode} />
-        </TabsContent>
+        <AnimatePresence mode="wait">
+          <m.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15 }}
+          >
+            {activeTab === "upload" && (
+              <UploadTab
+                doCreate={doCreate}
+                stack={settings.generatedCodeConfig}
+                setStack={setStack}
+              />
+            )}
+            {activeTab === "text" && (
+              <TextTab
+                doCreateFromText={doCreateFromText}
+                stack={settings.generatedCodeConfig}
+                setStack={setStack}
+              />
+            )}
+            {activeTab === "import" && (
+              <ImportTab importFromCode={importFromCode} />
+            )}
+          </m.div>
+        </AnimatePresence>
       </Tabs>
     </div>
   );
@@ -128,25 +119,6 @@ function UploadIcon() {
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <polyline points="17 8 12 3 7 8" />
       <line x1="12" y1="3" x2="12" y2="15" />
-    </svg>
-  );
-}
-
-function UrlIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
     </svg>
   );
 }

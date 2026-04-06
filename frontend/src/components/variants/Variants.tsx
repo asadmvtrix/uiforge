@@ -19,30 +19,32 @@ function VariantThumbnail({ code, isSelected }: VariantThumbnailProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [scale, setScale] = useState(0.1);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Selected variant updates every 300ms, others every 2s to reduce flashing
   const throttledCode = useThrottle(code, isSelected ? 300 : 2000);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-
     const updateScale = () => {
       const containerWidth = container.offsetWidth;
       setScale(containerWidth / IFRAME_WIDTH);
     };
-
     updateScale();
     const resizeObserver = new ResizeObserver(updateScale);
     resizeObserver.observe(container);
-
     return () => resizeObserver.disconnect();
   }, []);
 
   useEffect(() => {
     const iframe = iframeRef.current;
-    if (iframe) {
-      iframe.srcdoc = throttledCode;
-    }
+    if (!iframe || !throttledCode) return;
+    setIsLoading(true);
+    const onLoad = () => setIsLoading(false);
+    iframe.addEventListener("load", onLoad);
+    iframe.srcdoc = throttledCode;
+    return () => iframe.removeEventListener("load", onLoad);
   }, [throttledCode]);
 
   const scaledHeight = IFRAME_HEIGHT * scale;
@@ -50,9 +52,15 @@ function VariantThumbnail({ code, isSelected }: VariantThumbnailProps) {
   return (
     <div
       ref={containerRef}
-      className="w-full overflow-hidden rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900"
+      className="relative w-full overflow-hidden rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900"
       style={{ height: `${scaledHeight}px` }}
     >
+      {/* Smooth loading overlay — prevents visible flash */}
+      {isLoading && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 dark:bg-zinc-900/80 backdrop-blur-[2px] transition-opacity duration-200">
+          <div className="h-5 w-5 rounded-full border-2 border-gray-200 dark:border-zinc-700 border-t-indigo-500 animate-spin" />
+        </div>
+      )}
       <iframe
         ref={iframeRef}
         title="variant-preview"

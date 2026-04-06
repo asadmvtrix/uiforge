@@ -11,14 +11,33 @@ interface Props {
   setStack: (stack: Stack) => void;
 }
 
-const EXAMPLE_PROMPTS = [
+const ALL_EXAMPLES = [
   "An ecommerce homepage for eco-friendly skincare with product grid, reviews, and newsletter signup",
   "A portfolio site for a product designer with case studies, process steps, and contact",
   "A mobile fitness app dashboard with workout plan, progress ring, and quick-start buttons",
   "A music streaming app with now-playing, recommended playlists, and recent listens",
+  "A SaaS pricing page with three tiers, feature comparison table, and FAQ accordion",
+  "A real estate listing page with image carousel, property details, map, and contact form",
+  "A restaurant ordering app with menu categories, cart sidebar, and checkout flow",
+  "A project management dashboard with kanban board, team avatars, and progress charts",
+  "A social media profile page with post feed, stories bar, and follower stats",
+  "A weather app with current conditions, 7-day forecast, and hourly breakdown",
+  "A blog homepage with featured post hero, category tags, and infinite scroll grid",
+  "A banking app dashboard with account balance, recent transactions, and spending chart",
 ];
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function TextTab({ doCreateFromText, stack, setStack }: Props) {
+  // Shuffle on every render (new random set each time component mounts or tab switches)
+  const [examples] = useState<string[]>(() => shuffle(ALL_EXAMPLES).slice(0, 4));
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -47,82 +66,48 @@ function TextTab({ doCreateFromText, stack, setStack }: Props) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="w-full max-w-lg">
-        <div className="flex flex-col gap-6 p-8 border border-gray-200 dark:border-zinc-700 rounded-xl bg-gray-50/50 dark:bg-zinc-900/50">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-gray-400 dark:text-zinc-500"
-              >
-                <path d="M17 6.1H3" />
-                <path d="M21 12.1H3" />
-                <path d="M15.1 18H3" />
-              </svg>
-            </div>
+    <div className="flex flex-col gap-4 w-full">
+      <Textarea
+        ref={textareaRef}
+        rows={3}
+        placeholder="Describe the UI you want to create..."
+        className="w-full resize-none"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={handleKeyDown}
+        data-testid="text-input"
+      />
 
-            <div className="text-center">
-              <h3 className="text-gray-700 dark:text-zinc-200 font-medium">Generate from Text</h3>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Textarea
-              ref={textareaRef}
-              rows={4}
-              placeholder="Describe the UI you want to create..."
-              className="w-full resize-none"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={handleKeyDown}
-              data-testid="text-input"
-            />
-
-            <div className="flex flex-col gap-2">
-              <p className="text-xs text-gray-500 dark:text-zinc-400">Try an example:</p>
-              <div className="flex flex-wrap gap-2">
-                {EXAMPLE_PROMPTS.map((example, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleExampleClick(example)}
-                    className="text-xs px-2.5 py-1.5 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors truncate max-w-[200px]"
-                    title={example}
-                  >
-                    {example.length > 30 ? example.slice(0, 30) + "..." : example}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <OutputSettingsSection
-              stack={stack}
-              setStack={setStack}
-            />
-
-            <Button
-              onClick={handleGenerate}
-              className="w-full"
-              size="lg"
-              data-testid="text-generate"
-            >
-              Generate
-            </Button>
-
-            <p className="text-xs text-gray-400 dark:text-zinc-500 text-center">
-              Press Cmd/Ctrl + Enter to generate
-            </p>
-          </div>
-        </div>
+      <div className="flex flex-wrap gap-1.5">
+        {examples.map((example, index) => (
+          <button
+            key={index}
+            onClick={() => handleExampleClick(example)}
+            className="text-[11px] px-2.5 py-1 rounded-md border border-gray-200 dark:border-zinc-800 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-zinc-600 transition-colors truncate max-w-[220px]"
+            title={example}
+          >
+            {example.length > 35 ? example.slice(0, 35) + "…" : example}
+          </button>
+        ))}
       </div>
+
+      <OutputSettingsSection
+        stack={stack}
+        setStack={setStack}
+      />
+
+      <Button
+        onClick={handleGenerate}
+        className="w-full"
+        size="lg"
+        data-testid="text-generate"
+      >
+        Generate
+      </Button>
+
+      <p className="text-xs text-gray-400 dark:text-zinc-500 text-center">
+        Press Cmd/Ctrl + Enter to generate
+      </p>
     </div>
   );
 }

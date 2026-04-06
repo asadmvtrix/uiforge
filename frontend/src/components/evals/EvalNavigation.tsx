@@ -53,7 +53,7 @@ function EvalNavigation() {
         to="/"
         className="text-sm text-gray-300 hover:text-white transition-colors"
       >
-        ← Back to app
+        ← Back To App
       </Link>
     </div>
   );

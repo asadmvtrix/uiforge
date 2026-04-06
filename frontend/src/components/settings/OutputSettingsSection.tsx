@@ -38,7 +38,7 @@ function OutputSettingsSection({
           >
             <SelectValue placeholder="Select a stack" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent side="top">
             <SelectGroup>
               {Object.values(Stack).map((stack) => (
                 <SelectItem key={stack} value={stack}>

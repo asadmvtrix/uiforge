@@ -2,7 +2,7 @@
 name = "backend"
 version = "0.1.0"
 description = ""
-authors = ["Abi Raja <abimanyuraja@gmail.com>"]
+authors = ["Asad"]
 license = "MIT"
 package-mode = false
 

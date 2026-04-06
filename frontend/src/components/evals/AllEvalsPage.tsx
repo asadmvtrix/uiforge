@@ -12,7 +12,7 @@ function AllEvalsPage() {
             to="/"
             className="text-sm text-gray-500 hover:text-gray-700 flex items-center"
           >
-            ← Back to app
+            ← Back To App
           </Link>
         </div>
         <div className="space-y-4">

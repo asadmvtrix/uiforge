@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 import Variants from "../variants/Variants";
 import UpdateImageUpload, { UpdateImagePreview } from "../UpdateImageUpload";
 import AgentActivity from "../agent/AgentActivity";
-import WorkingPulse from "../core/WorkingPulse";
+import WorkingIndicator from "../core/WorkingIndicator";
 import ImageLightbox from "../ImageLightbox";
 import { Commit } from "../commits/types";
 import { removeHighlight } from "../select-and-edit/utils";
@@ -285,10 +285,10 @@ function Sidebar({
       >
         {latestChangeSummary && (
           <div className="mb-4 flex flex-col items-end">
-            <div className="inline-block max-w-[85%] rounded-2xl rounded-br-md bg-violet-100 px-4 py-2.5 dark:bg-violet-900/30">
+            <div className="inline-block max-w-[85%] rounded-2xl rounded-br-md bg-indigo-100 px-4 py-2.5 dark:bg-indigo-900/30">
               <p
                 ref={promptTextRef}
-                className={`text-[13px] text-violet-950 dark:text-violet-100 break-words whitespace-pre-wrap ${
+                className={`text-[13px] text-indigo-950 dark:text-indigo-100 break-words whitespace-pre-wrap ${
                   !isPromptExpanded ? "line-clamp-[10]" : ""
                 }`}
               >
@@ -296,9 +296,9 @@ function Sidebar({
               </p>
               {selectedElementTag && (
                 <div className="mt-1.5 flex items-center gap-1.5">
-                  <LuMousePointerClick className="w-3 h-3 text-violet-500 dark:text-violet-400" />
-                  <span className="text-[11px] text-violet-600 dark:text-violet-300">
-                    Selected: <code className="font-mono text-[10px] bg-violet-200/60 dark:bg-violet-800/50 px-1 py-0.5 rounded">&lt;{selectedElementTag}&gt;</code>
+                  <LuMousePointerClick className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
+                  <span className="text-[11px] text-indigo-600 dark:text-indigo-300">
+                    Selected: <code className="font-mono text-[10px] bg-indigo-200/60 dark:bg-indigo-800/50 px-1 py-0.5 rounded">&lt;{selectedElementTag}&gt;</code>
                   </span>
                 </div>
               )}
@@ -319,7 +319,7 @@ function Sidebar({
                     <button
                       key={`${image.slice(0, 40)}-${index}`}
                       onClick={() => setLightboxImage(image)}
-                      className="shrink-0 cursor-zoom-in rounded-lg border border-gray-200 bg-white p-1 dark:border-zinc-700 dark:bg-zinc-900 hover:border-violet-300 dark:hover:border-violet-500 transition-colors"
+                      className="shrink-0 cursor-zoom-in rounded-lg border border-gray-200 bg-white p-1 dark:border-zinc-700 dark:bg-zinc-900 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
                     >
                       <img
                         src={image}
@@ -348,17 +348,7 @@ function Sidebar({
         )}
 
         {showWorkingIndicator && (
-          <div className="working-indicator-bg mb-3 rounded-xl border border-violet-200 dark:border-violet-800 px-3 py-2 transition-all duration-500">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                <WorkingPulse />
-                <span>Working...</span>
-              </div>
-              <div className="text-xs font-semibold text-gray-700 dark:text-gray-200">
-                Time so far {elapsedSeconds ? `${elapsedSeconds}s` : "--"}
-              </div>
-            </div>
-          </div>
+          <WorkingIndicator elapsedSeconds={elapsedSeconds} />
         )}
 
         {currentCommit?.type === "ai_create" &&
@@ -385,13 +375,13 @@ function Sidebar({
                 onClick={onOpenVersions}
                 className="rounded-lg border border-gray-300 dark:border-zinc-600 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
               >
-                All versions
+                All Versions
               </button>
               <button
                 onClick={() => latestCommitHash && setHead(latestCommitHash)}
                 className="rounded-lg bg-gray-900 dark:bg-white px-4 py-2 text-sm font-medium text-white dark:text-black hover:bg-black dark:hover:bg-gray-200 transition-colors"
               >
-                View latest
+                View Latest
               </button>
             </div>
           </div>
@@ -486,11 +476,11 @@ function Sidebar({
             {inSelectAndEditMode && (
               <div className="mb-2">
                 {selectedElement ? (
-                  <div className="flex items-center justify-between rounded-xl border border-violet-300 dark:border-violet-600 bg-violet-50 dark:bg-violet-900/20 px-3 py-2">
+                  <div className="flex items-center justify-between rounded-xl border border-indigo-300 dark:border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 px-3 py-2">
                     <div className="flex items-center gap-2 min-w-0">
-                      <LuMousePointerClick className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400 shrink-0" />
-                      <span className="text-sm text-violet-700 dark:text-violet-300 truncate">
-                        Selected: <code className="font-mono text-xs bg-violet-100 dark:bg-violet-800/50 px-1.5 py-0.5 rounded">&lt;{selectedElement.tagName.toLowerCase()}&gt;</code>
+                      <LuMousePointerClick className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                      <span className="text-sm text-indigo-700 dark:text-indigo-300 truncate">
+                        Selected: <code className="font-mono text-xs bg-indigo-100 dark:bg-indigo-800/50 px-1.5 py-0.5 rounded">&lt;{selectedElement.tagName.toLowerCase()}&gt;</code>
                       </span>
                     </div>
                     <button
@@ -498,21 +488,21 @@ function Sidebar({
                         removeHighlight(selectedElement);
                         setSelectedElement(null);
                       }}
-                      className="shrink-0 ml-3 p-0.5 text-violet-400 hover:text-violet-700 dark:hover:text-violet-200 transition-colors"
+                      className="shrink-0 ml-3 p-0.5 text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-200 transition-colors"
                       title="Clear selection"
                     >
                       <LuX className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between rounded-xl border border-violet-200 dark:border-violet-700 bg-violet-50 dark:bg-violet-900/20 px-3 py-2">
+                  <div className="flex items-center justify-between rounded-xl border border-indigo-200 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-900/20 px-3 py-2">
                     <div className="flex items-center gap-2">
-                      <LuMousePointerClick className="w-3.5 h-3.5 text-violet-500 dark:text-violet-400 shrink-0" />
-                      <span className="text-sm font-medium text-violet-700 dark:text-violet-300">Click an element to edit it</span>
+                      <LuMousePointerClick className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 shrink-0" />
+                      <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">Click an element to edit it</span>
                     </div>
                     <button
                       onClick={toggleInSelectAndEditMode}
-                      className="shrink-0 ml-3 text-sm text-violet-500 dark:text-violet-400 hover:text-violet-800 dark:hover:text-violet-200 transition-colors"
+                      className="shrink-0 ml-3 text-sm text-indigo-500 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors"
                     >
                       Exit
                     </button>
@@ -520,7 +510,7 @@ function Sidebar({
                 )}
               </div>
             )}
-            <div className="relative w-full overflow-hidden rounded-2xl border-2 border-violet-300 bg-white transition-all focus-within:border-violet-500 dark:border-violet-500/50 dark:bg-zinc-900 dark:focus-within:border-violet-400">
+            <div className="relative w-full overflow-hidden rounded-2xl border-2 border-indigo-300 bg-white transition-all focus-within:border-indigo-500 dark:border-indigo-500/50 dark:bg-zinc-900 dark:focus-within:border-indigo-400">
               <UpdateImagePreview
                 updateImages={updateImages}
                 setUpdateImages={setUpdateImages}
@@ -558,7 +548,7 @@ function Sidebar({
                       onClick={toggleInSelectAndEditMode}
                       className={`rounded-lg p-2 transition-colors ${
                         inSelectAndEditMode
-                          ? "bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400"
+                          ? "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
                           : "text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
                       }`}
                       title={inSelectAndEditMode ? "Exit selection mode" : "Select an element in the preview to target your edit"}
@@ -572,7 +562,7 @@ function Sidebar({
                   disabled={!updateInstruction.trim()}
                   className={`rounded-xl p-2 transition-colors update-btn ${
                     updateInstruction.trim()
-                      ? "bg-violet-600 text-white hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-400"
+                      ? "bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400"
                       : "cursor-not-allowed bg-gray-200 text-gray-400 dark:bg-zinc-700 dark:text-zinc-500"
                   }`}
                   title="Send"

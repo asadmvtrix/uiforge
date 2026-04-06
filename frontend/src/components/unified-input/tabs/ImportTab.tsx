@@ -61,75 +61,45 @@ function ImportTab({ importFromCode }: Props) {
   });
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="w-full max-w-lg">
-        <div className="flex flex-col gap-6 p-8 border border-gray-200 dark:border-zinc-700 rounded-xl bg-gray-50/50 dark:bg-zinc-900/50">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-gray-400 dark:text-zinc-500"
-              >
-                <polyline points="16 18 22 12 16 6" />
-                <polyline points="8 6 2 12 8 18" />
-              </svg>
-            </div>
-
-            <div className="text-center">
-              <h3 className="text-gray-700 dark:text-zinc-200 font-medium">Import Existing Code</h3>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div
-              {...getRootProps({
-                className: `rounded-lg ${
-                  isDraggingFile ? "ring-2 ring-blue-300 dark:ring-blue-700 ring-offset-2 dark:ring-offset-zinc-900" : ""
-                }`,
-              })}
-            >
-              <input {...getInputProps()} />
-              <Textarea
-                ref={textareaRef}
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="w-full h-48 font-mono text-sm resize-none"
-                placeholder="Paste your HTML code here or drag/drop a .html file..."
-                data-testid="import-input"
-              />
-            </div>
-
-            <OutputSettingsSection
-              stack={stack}
-              setStack={(config: Stack) => setStack(config)}
-              label="Stack:"
-              shouldDisableUpdates={false}
-            />
-
-            <Button
-              onClick={doImport}
-              className="w-full"
-              size="lg"
-              data-testid="import-submit"
-            >
-              Import Code
-            </Button>
-
-            <p className="text-xs text-gray-400 dark:text-zinc-500 text-center">
-              Press Cmd/Ctrl + Enter to import
-            </p>
-          </div>
-        </div>
+    <div className="flex flex-col gap-4 w-full">
+      <div
+        {...getRootProps({
+          className: `rounded-lg ${
+            isDraggingFile ? "ring-2 ring-blue-300 dark:ring-blue-700 ring-offset-2 dark:ring-offset-zinc-900" : ""
+          }`,
+        })}
+      >
+        <input {...getInputProps()} />
+        <Textarea
+          ref={textareaRef}
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="w-full h-40 font-mono text-sm resize-none"
+          placeholder="Paste your HTML code here or drag/drop a .html file..."
+          data-testid="import-input"
+        />
       </div>
+
+      <OutputSettingsSection
+        stack={stack}
+        setStack={(config: Stack) => setStack(config)}
+        label="Stack:"
+        shouldDisableUpdates={false}
+      />
+
+      <Button
+        onClick={doImport}
+        className="w-full"
+        size="lg"
+        data-testid="import-submit"
+      >
+        Import Code
+      </Button>
+
+      <p className="text-xs text-gray-400 dark:text-zinc-500 text-center">
+        Press Cmd/Ctrl + Enter to import
+      </p>
     </div>
   );
 }

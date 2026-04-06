@@ -84,7 +84,7 @@ function EvalsPage() {
     setIsLoading(true);
     try {
       const queryParams = new URLSearchParams({
-        folder: `/Users/abi/Downloads/${folderPath}`,
+        folder: folderPath,
       });
 
       const response = await fetch(`${HTTP_BACKEND_URL}/evals?${queryParams}`);

@@ -1,11 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { generateCode } from "./generateCode";
 import { AppState, AppTheme, EditorTheme, Settings } from "./types";
-import { IS_RUNNING_ON_CLOUD } from "./config";
-import { PicoBadge } from "./components/messages/PicoBadge";
-import { OnboardingNote } from "./components/messages/OnboardingNote";
 import { usePersistedState } from "./hooks/usePersistedState";
-import TermsOfServiceDialog from "./components/TermsOfServiceDialog";
 import { USER_CLOSE_WEB_SOCKET_CODE } from "./constants";
 import toast from "react-hot-toast";
 import { nanoid } from "nanoid";
@@ -33,6 +29,7 @@ import StartPane from "./components/start-pane/StartPane";
 import SettingsTab from "./components/settings/SettingsTab";
 import { Commit } from "./components/commits/types";
 import { createCommit } from "./components/commits/utils";
+import { AnimatePresence, m } from "framer-motion";
 
 function App() {
   const {
@@ -86,13 +83,10 @@ function App() {
       openAiBaseURL: null,
       anthropicApiKey: null,
       geminiApiKey: null,
-      screenshotOneApiKey: null,
       isImageGenerationEnabled: true,
       editorTheme: EditorTheme.COBALT,
       generatedCodeConfig: Stack.HTML_TAILWIND,
       codeGenerationModel: CodeGenerationModel.CLAUDE_4_5_OPUS_2025_11_01,
-      // Only relevant for hosted version
-      isTermOfServiceAccepted: false,
     },
     "setting"
   );
@@ -599,13 +593,6 @@ function App() {
     });
   }
 
-  const handleTermDialogOpenChange = (open: boolean) => {
-    setSettings((s) => ({
-      ...s,
-      isTermOfServiceAccepted: !open,
-    }));
-  };
-
   function setStack(stack: Stack) {
     setSettings((prev) => ({
       ...prev,
@@ -644,23 +631,15 @@ function App() {
 
   return (
     <div
-      className={`dark:bg-black dark:text-white ${
+      className={`bg-white dark:bg-zinc-950 text-gray-900 dark:text-white ${
         appState === AppState.CODING || appState === AppState.CODE_READY
           ? "flex h-dvh flex-col overflow-hidden lg:block lg:h-screen"
           : "min-h-screen"
       }`}
     >
-      {IS_RUNNING_ON_CLOUD && <PicoBadge />}
-      {IS_RUNNING_ON_CLOUD && (
-        <TermsOfServiceDialog
-          open={!settings.isTermOfServiceAccepted}
-          onOpenChange={handleTermDialogOpenChange}
-        />
-      )}
-
       {/* Icon strip - always visible */}
       <div
-        className="sticky top-0 z-50 lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-16 lg:flex-col"
+        className="sticky top-0 z-50 lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-12 lg:flex-col"
       >
         <IconStrip
           isHistoryOpen={isHistoryOpen}
@@ -668,17 +647,13 @@ function App() {
           isSettingsOpen={isSettingsOpen}
           showHistory={isCodingOrReady}
           showEditor={isCodingOrReady}
+          isDark={appTheme === AppTheme.DARK || (appTheme === AppTheme.SYSTEM && window.matchMedia("(prefers-color-scheme: dark)").matches)}
           onToggleHistory={() => {
             setIsHistoryOpen((prev) => !prev);
             setIsSettingsOpen(false);
             setMobilePane("chat");
           }}
           onToggleEditor={() => {
-            setIsHistoryOpen(false);
-            setIsSettingsOpen(false);
-            setMobilePane("preview");
-          }}
-          onLogoClick={() => {
             setIsHistoryOpen(false);
             setIsSettingsOpen(false);
             setMobilePane("preview");
@@ -693,12 +668,16 @@ function App() {
             setIsSettingsOpen(true);
             setIsHistoryOpen(false);
           }}
+          onToggleTheme={() => {
+            const currentlyDark = appTheme === AppTheme.DARK || (appTheme === AppTheme.SYSTEM && window.matchMedia("(prefers-color-scheme: dark)").matches);
+            setAppTheme(currentlyDark ? AppTheme.LIGHT : AppTheme.DARK);
+          }}
         />
       </div>
 
       {isCodingOrReady && !isSettingsOpen && (
-        <div className="border-b border-gray-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-zinc-950 lg:hidden">
-          <div className="grid grid-cols-2 rounded-xl bg-gray-100 p-1 dark:bg-zinc-800">
+        <div className="border-b border-gray-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-zinc-900 lg:hidden">
+          <div className="grid grid-cols-2 rounded-lg bg-gray-100 p-0.5 dark:bg-zinc-800">
             <button
               onClick={() => {
                 setIsHistoryOpen(false);
@@ -727,14 +706,27 @@ function App() {
       )}
 
       {/* Content panel - shows sidebar, history, or editor */}
+      <AnimatePresence>
       {showContentPanel && !isSettingsOpen && (
-        <div
-          className={`border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 dark:text-white lg:fixed lg:inset-y-0 lg:left-16 lg:z-40 lg:flex lg:w-[calc(28rem-4rem)] lg:flex-col lg:border-b-0 lg:border-r ${
+        <m.div
+          initial={{ x: -16, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -16, opacity: 0 }}
+          transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+          className={`border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 dark:text-white lg:fixed lg:inset-y-0 lg:left-12 lg:z-40 lg:flex lg:w-[25rem] lg:flex-col lg:border-b-0 lg:border-r ${
             showMobileChatPane ? "block" : "hidden lg:flex"
           }`}
         >
+            <AnimatePresence mode="wait">
             {isHistoryOpen ? (
-              <div className="flex-1 overflow-y-auto sidebar-scrollbar-stable px-4">
+              <m.div
+                key="history"
+                initial={{ opacity: 0, x: 8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -8 }}
+                transition={{ duration: 0.2 }}
+                className="flex-1 overflow-y-auto sidebar-scrollbar-stable px-4"
+              >
                 <div className="mt-3">
                   <div className="flex items-center justify-between mb-3 px-1">
                     <h2 className="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">Versions</h2>
@@ -743,20 +735,21 @@ function App() {
                       className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
                     >
                       <LuChevronLeft className="w-3.5 h-3.5" />
-                      Back to editor
+                      Back to Editor
                     </button>
                   </div>
                   <HistoryDisplay />
                 </div>
-              </div>
+              </m.div>
             ) : (
-              <>
-                {IS_RUNNING_ON_CLOUD && !settings.openAiApiKey && (
-                  <div className="px-6 mt-4">
-                    <OnboardingNote />
-                  </div>
-                )}
-
+              <m.div
+                key="sidebar"
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 8 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-1 flex-col"
+              >
                 {(appState === AppState.CODING ||
                   appState === AppState.CODE_READY) && (
                   <Sidebar
@@ -770,50 +763,81 @@ function App() {
                     }}
                   />
                 )}
-              </>
+              </m.div>
             )}
-        </div>
+            </AnimatePresence>
+        </m.div>
       )}
+      </AnimatePresence>
 
       <main
         className={`${
           isSettingsOpen
-            ? "flex flex-1 min-h-0 flex-col lg:h-full lg:pl-16"
+            ? "flex flex-1 min-h-0 flex-col lg:h-full lg:pl-12"
             : showContentPanel
               ? "flex flex-1 min-h-0 flex-col lg:h-full lg:pl-[28rem]"
-              : "lg:pl-16"
+              : "lg:pl-12"
         } ${isCodingOrReady && !isSettingsOpen && mobilePane === "chat" ? "hidden lg:flex" : ""}`}
       >
+        <AnimatePresence mode="wait">
         {isSettingsOpen ? (
-          <SettingsTab
-            settings={settings}
-            setSettings={setSettings}
-            appTheme={appTheme}
-            setAppTheme={setAppTheme}
-          />
+          <m.div
+            key="settings"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+            className="flex flex-1 flex-col min-h-0"
+          >
+            <SettingsTab
+              settings={settings}
+              setSettings={setSettings}
+              appTheme={appTheme}
+              setAppTheme={setAppTheme}
+              onBack={() => setIsSettingsOpen(false)}
+            />
+          </m.div>
         ) : (
           <>
             {appState === AppState.INITIAL && (
-              <StartPane
-                doCreate={doCreate}
-                doCreateFromText={doCreateFromText}
-                importFromCode={importFromCode}
-                settings={settings}
-                setSettings={setSettings}
-              />
+              <m.div
+                key="start"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+                className="flex flex-1 flex-col min-h-0"
+              >
+                <StartPane
+                  doCreate={doCreate}
+                  doCreateFromText={doCreateFromText}
+                  importFromCode={importFromCode}
+                  settings={settings}
+                  setSettings={setSettings}
+                />
+              </m.div>
             )}
 
             {isCodingOrReady && (
-              <PreviewPane
-                settings={settings}
-                onOpenVersions={() => {
-                  setIsHistoryOpen(true);
-                  setMobilePane("chat");
-                }}
-              />
+              <m.div
+                key="preview"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-1 flex-col min-h-0"
+              >
+                <PreviewPane
+                  settings={settings}
+                  onOpenVersions={() => {
+                    setIsHistoryOpen(true);
+                    setMobilePane("chat");
+                  }}
+                />
+              </m.div>
             )}
           </>
         )}
+        </AnimatePresence>
       </main>
     </div>
   );

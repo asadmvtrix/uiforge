@@ -32,6 +32,8 @@ Stack = Literal[
     "bootstrap",
     "ionic_tailwind",
     "vue_tailwind",
+    "angular_material",
+    "svelte_tailwind",
 ]
 
 

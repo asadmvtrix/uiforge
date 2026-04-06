@@ -21,6 +21,7 @@ import ReactMarkdown from "react-markdown";
 import { Light as SyntaxHighlighterBase } from "react-syntax-highlighter";
 import html from "react-syntax-highlighter/dist/esm/languages/hljs/xml";
 import { vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { googlecode } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import WorkingPulse from "../core/WorkingPulse";
 
 SyntaxHighlighterBase.registerLanguage("html", html);
@@ -28,6 +29,7 @@ const SyntaxHighlighter = SyntaxHighlighterBase as any;
 
 function CodePreviewBlock({ code, isGenerating }: { code: string; isGenerating: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isDark = document.documentElement.classList.contains("dark");
 
   useEffect(() => {
     if (isGenerating && containerRef.current) {
@@ -39,7 +41,7 @@ function CodePreviewBlock({ code, isGenerating }: { code: string; isGenerating: 
     <div ref={containerRef} className="max-h-60 overflow-auto rounded-md">
       <SyntaxHighlighter
         language="html"
-        style={vs2015}
+        style={isDark ? vs2015 : googlecode}
         customStyle={{ margin: 0, padding: "0.5rem", fontSize: "0.75rem", borderRadius: "0.375rem" }}
         wrapLongLines
       >
@@ -551,7 +553,7 @@ function AgentActivity() {
         </>
       ) : (
         <>
-          <div className="flex items-center justify-between rounded-xl border border-violet-200 dark:border-violet-800 bg-gradient-to-r from-violet-50 to-white dark:from-violet-900/20 dark:to-zinc-900 px-3 py-2 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] dark:shadow-[0_0_15px_-3px_rgba(139,92,246,0.4)] transition-all duration-500">
+          <div className="flex items-center justify-between rounded-xl border border-indigo-200 dark:border-indigo-800 bg-gradient-to-r from-indigo-50 to-white dark:from-indigo-900/20 dark:to-zinc-900 px-3 py-2 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] dark:shadow-[0_0_15px_-3px_rgba(139,92,246,0.4)] transition-all duration-500">
             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
               <WorkingPulse />
               <span>Working...</span>

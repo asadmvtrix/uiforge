@@ -222,7 +222,6 @@ class App {
       editorTheme: "cobalt",
       generatedCodeConfig: this.stack,
       codeGenerationModel: this.model,
-      isTermOfServiceAccepted: true,
       accessCode: null,
     };
 

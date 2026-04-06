@@ -1,4 +1,5 @@
-import { LuClock, LuCode, LuSettings, LuPlus } from "react-icons/lu";
+import { LuClock, LuCode, LuSettings, LuPlus, LuSun, LuMoon } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
 interface IconStripProps {
   isHistoryOpen: boolean;
@@ -6,11 +7,12 @@ interface IconStripProps {
   isSettingsOpen: boolean;
   showHistory: boolean;
   showEditor: boolean;
+  isDark: boolean;
   onToggleHistory: () => void;
   onToggleEditor: () => void;
-  onLogoClick: () => void;
   onNewProject: () => void;
   onOpenSettings: () => void;
+  onToggleTheme: () => void;
 }
 
 function IconStrip({
@@ -19,85 +21,61 @@ function IconStrip({
   isSettingsOpen,
   showHistory,
   showEditor,
+  isDark,
   onToggleHistory,
   onToggleEditor,
-  onLogoClick,
   onNewProject,
   onOpenSettings,
+  onToggleTheme,
 }: IconStripProps) {
+  const navigate = useNavigate();
+
+  const btn = (active: boolean) =>
+    `flex h-8 w-8 items-center justify-center rounded-md transition-colors duration-100 ${
+      active
+        ? "text-gray-900 dark:text-white bg-gray-100 dark:bg-zinc-800"
+        : "text-gray-400 dark:text-zinc-500 hover:text-gray-900 dark:hover:text-white"
+    }`;
+
   return (
-    <div className="flex w-full items-center justify-between border-b border-gray-200 bg-gray-50 px-2 py-2 dark:border-zinc-800 dark:bg-zinc-900 lg:h-full lg:w-16 lg:flex-col lg:items-center lg:gap-y-3 lg:border-b-0 lg:border-r lg:px-0 lg:py-4">
+    <div className="flex w-full items-center justify-between border-b border-gray-200 bg-white px-2 py-1.5 dark:border-zinc-800 dark:bg-zinc-950 lg:h-full lg:w-12 lg:flex-col lg:items-center lg:justify-start lg:gap-0.5 lg:border-b-0 lg:border-r lg:px-1.5 lg:py-2 lg:[&>div:last-child]:mt-auto">
+
       {/* Logo */}
       <button
-        onClick={onLogoClick}
-        className="rounded-lg p-2 transition-colors hover:bg-gray-200/70 dark:hover:bg-zinc-800 lg:mb-2 lg:p-1"
+        onClick={() => navigate("/")}
+        title="Home"
+        className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors lg:mb-4"
       >
-        <img
-          src="/favicon/main.png"
-          alt="Logo"
-          className="w-5 h-5 dark:invert"
-        />
+        <img src="/favicon/main.png" alt="" className="h-4 w-4 dark:invert" />
       </button>
 
-      <div className="flex items-center gap-1 lg:flex-col lg:gap-0 lg:contents">
-        {/* Editor */}
+      {/* Middle group — visible on both mobile and desktop */}
+      <div className="flex items-center gap-0.5 lg:flex-col lg:w-full">
         {showEditor && (
-          <button
-            onClick={onToggleEditor}
-            className={`flex items-center justify-center rounded-lg p-2 transition-colors lg:flex-col lg:gap-1 lg:px-2 lg:py-1.5 ${
-              isEditorOpen
-                ? "text-gray-900 dark:text-white"
-                : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-            }`}
-            title="Editor"
-          >
-            <LuCode className="w-[18px] h-[18px]" />
-            <span className="hidden text-[10px] leading-none lg:block">Editor</span>
+          <button onClick={onToggleEditor} title="Editor" className={btn(isEditorOpen)}>
+            <LuCode className="h-4 w-4" />
           </button>
         )}
-
-        {/* Versions */}
         {showHistory && (
-          <button
-            onClick={onToggleHistory}
-            className={`flex items-center justify-center rounded-lg p-2 transition-colors lg:flex-col lg:gap-1 lg:px-2 lg:py-1.5 ${
-              isHistoryOpen
-                ? "text-gray-900 dark:text-white"
-                : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-            }`}
-            title="Versions"
-          >
-            <LuClock className="w-[18px] h-[18px]" />
-            <span className="hidden text-[10px] leading-none lg:block">Versions</span>
+          <button onClick={onToggleHistory} title="Versions" className={btn(isHistoryOpen)}>
+            <LuClock className="h-4 w-4" />
           </button>
         )}
-
-        <button
-          onClick={onNewProject}
-          className="flex items-center justify-center rounded-lg p-2 transition-colors bg-violet-100 text-violet-700 hover:bg-violet-200 lg:flex-col lg:gap-1 lg:px-2 lg:py-1.5 dark:bg-violet-900/40 dark:text-violet-200 dark:hover:bg-violet-900/60"
-          title="Start a new project"
-        >
-          <LuPlus className="w-[18px] h-[18px]" />
-          <span className="hidden text-[10px] leading-none lg:block font-medium">New</span>
+        <button onClick={onNewProject} title="New" className={btn(false)}>
+          <LuPlus className="h-4 w-4" />
         </button>
       </div>
 
-      {/* Spacer pushes settings to bottom */}
-      <div className="hidden flex-1 lg:block" />
-
-      {/* Settings */}
-      <button
-        onClick={onOpenSettings}
-        className={`flex items-center justify-center rounded-lg p-2 transition-colors lg:flex-col lg:gap-1 lg:px-2 lg:py-1.5 ${
-          isSettingsOpen
-            ? "text-gray-900 dark:text-white"
-            : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-        }`}
-        title="Settings"
-      >
-        <LuSettings className="w-[18px] h-[18px]" />
-        <span className="hidden text-[10px] leading-none lg:block">Settings</span>
-      </button>
+      {/* Right group on mobile, bottom on desktop */}
+      <div className="flex items-center gap-0.5 lg:flex-col lg:w-full lg:mt-auto">
+        <div className="hidden flex-1 lg:block" />
+        <button onClick={onToggleTheme} title="Toggle theme" className={btn(false)}>
+          {isDark ? <LuSun className="h-4 w-4" /> : <LuMoon className="h-4 w-4" />}
+        </button>
+        <button onClick={onOpenSettings} title="Settings" className={btn(isSettingsOpen)}>
+          <LuSettings className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   );
 }

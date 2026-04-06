@@ -212,7 +212,7 @@ class AnthropicProviderSession(ProviderSession):
     async def stream_turn(self, on_event: EventSink) -> ProviderTurn:
         stream_kwargs: Dict[str, Any] = {
             "model": self._model.value,
-            "max_tokens": 50000,
+            "max_tokens": 16000,
             "system": self._system_prompt,
             "messages": self._messages,
             "tools": self._tools,
@@ -224,9 +224,9 @@ class AnthropicProviderSession(ProviderSession):
                 "type": "adaptive",
             }
             effort = (
-                "high"
+                "low"
                 if self._model.value == Llm.CLAUDE_SONNET_4_6.value
-                else "max"
+                else "high"
             )
             stream_kwargs["output_config"] = {"effort": effort}
         elif self._model.value in THINKING_MODELS:

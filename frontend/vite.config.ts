@@ -14,15 +14,7 @@ export default ({ mode }) => {
       checker({ 
         typescript: true
       }),
-      createHtmlPlugin({
-        inject: {
-          data: {
-            injectHead: process.env.VITE_IS_DEPLOYED
-              ? '<script defer="" data-domain="screenshottocode.com" src="https://plausible.io/js/script.js"></script>'
-              : "",
-          },
-        },
-      }),
+      createHtmlPlugin(),
     ],
     resolve: {
       alias: {

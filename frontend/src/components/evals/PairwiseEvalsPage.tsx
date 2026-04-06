@@ -56,8 +56,8 @@ function PairwiseEvalsPage() {
     setIsLoading(true);
     try {
       const queryParams = new URLSearchParams({
-        folder1: `/Users/abi/Downloads/${folder1Path}`,
-        folder2: `/Users/abi/Downloads/${folder2Path}`,
+        folder1: folder1Path,
+        folder2: folder2Path,
       });
 
       const response = await fetch(

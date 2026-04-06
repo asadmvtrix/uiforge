@@ -540,7 +540,7 @@ function BestOfNEvalsPage() {
                     setCurrentModelIndex(0);
                   }}
                   className="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1 rounded-lg text-sm transition-colors"
-                  title="Back to setup"
+                  title="Back To Setup"
                 >
                   <svg
                     className="w-4 h-4"
