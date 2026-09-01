@@ -9,61 +9,61 @@ OpenAI, Anthropic, and Google Gemini models.
 Vercel cannot run this API. Generation uses a WebSocket. The free setup is:
 
 - **Vercel** = website
-- **Render free web service** = API (sleeps after idle; supports WebSockets)
+- **Render free web service** = API (sleeps after ~15 minutes idle)
 
-Render may ask for a card to verify the account. The free plan itself does not
-charge for this API if you stay on Free.
+Prefer creating the API as a **Web Service** (not Blueprint). Blueprint often
+fails validation on free accounts.
 
-### 1. Push this repo to GitHub
-
-Already done if you are on `main` at `asadmvtrix/uiforge`.
-
-### 2. Deploy the API on Render
+### 1. Deploy the API on Render (manual Web Service)
 
 1. Open <https://dashboard.render.com> and sign in with GitHub.
-2. Click **New +** → **Blueprint**.
-3. Connect the `asadmvtrix/uiforge` repo if prompted.
-4. Select that repo. Render reads `render.yaml` and shows **uiforge-api**.
-5. Fill in at least one secret (leave unused ones blank):
+2. **New +** → **Web Service** (not Blueprint).
+3. Connect / select repo `asadmvtrix/uiforge`.
+4. Settings:
 
-   - `OPENAI_API_KEY` or
-   - `ANTHROPIC_API_KEY` or
-   - `GEMINI_API_KEY`
+   | Field | Value |
+   | --- | --- |
+   | Name | `uiforge-api` |
+   | Language / Runtime | **Python 3** |
+   | Branch | `main` |
+   | Root Directory | `backend` |
+   | Build Command | `pip install "poetry==1.8.0" && poetry config virtualenvs.create false && poetry install --without dev --no-interaction --no-ansi` |
+   | Start Command | `uvicorn main:app --host 0.0.0.0 --port $PORT` |
+   | Instance type | **Free** |
 
-6. Leave `OPENAI_BASE_URL` and `REPLICATE_API_KEY` blank unless you use them.
-7. Click **Apply**.
-8. Wait for the Docker build (often 5–15 minutes the first time). Watch
-   **Logs**.
-9. When status is **Live**, copy the service URL, for example
-   `https://uiforge-api.onrender.com` (your suffix may differ).
-10. Open `https://YOUR-RENDER-URL/health` and confirm `{"ok": true}`.
+5. Health Check Path: `/health`
+6. Environment variables:
 
-Free services sleep after inactivity. The first generate after sleep can take
-about a minute while Render wakes the container.
+   | Key | Value |
+   | --- | --- |
+   | `PYTHON_VERSION` | `3.12.3` |
+   | `IS_PROD` | `true` |
+   | At least one of `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` | your key |
 
-### 3. Deploy the website on Vercel
+7. Click **Create Web Service**.
+8. Wait for the build. Open `https://YOUR-RENDER-URL/health` and confirm
+   `{"ok": true}`.
+
+Free services sleep after idle. The first request after sleep can take about a
+minute.
+
+Optional: `render.yaml` exists for Blueprint users, but skip it if Render
+shows “a few issues.”
+
+### 2. Deploy the website on Vercel
 
 1. Open <https://vercel.com/new> and import the same GitHub repo.
 2. Leave **Root Directory** blank / `./` so `vercel.json` is used.
-3. Add environment variables (no trailing slash):
+3. Env vars (no trailing slash):
 
    | Name | Value |
    | --- | --- |
    | `VITE_HTTP_BACKEND_URL` | `https://YOUR-RENDER-URL` |
    | `VITE_WS_BACKEND_URL` | `wss://YOUR-RENDER-URL` |
 
-4. Deploy. Open the Vercel URL → `/studio` → generate.
-
-If you change the Render URL later, update the Vercel env vars and **Redeploy**.
-Vite bakes those values in at build time.
+4. Deploy. Open `/studio` and generate.
 
 ## Local development
-
-- Node.js 22+
-- Python 3.10+
-- Poetry
-
-Create a root `.env` from `.env.example` and add at least one AI provider key.
 
 ```bash
 cd frontend
@@ -74,21 +74,9 @@ cd ..
 npm run dev
 ```
 
-That starts:
-
-- frontend at <http://localhost:5173>
-- backend at <http://127.0.0.1:7001>
-
-Studio: <http://localhost:5173/studio>.
-
-## Docker
-
-```bash
-cp .env.example .env
-docker compose up --build
-```
-
-Then open <http://localhost:5173>.
+- frontend: <http://localhost:5173>
+- backend: <http://127.0.0.1:7001>
+- studio: <http://localhost:5173/studio>
 
 ## License
 
