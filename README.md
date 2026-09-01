@@ -4,52 +4,42 @@ UIForge turns screenshots, text prompts, and existing HTML into editable web
 interfaces. It uses a React/Vite frontend and a FastAPI backend, and supports
 OpenAI, Anthropic, and Google Gemini models.
 
-## Go live (recommended): Koyeb + Vercel
+## Go live (recommended): Render + Vercel
 
 Vercel cannot run this API. Generation uses a WebSocket. The free setup is:
 
 - **Vercel** = website
-- **Koyeb free instance** = API (sleeps after about 1 hour idle; usually no card)
+- **Render free web service** = API (sleeps after idle; supports WebSockets)
+
+Render may ask for a card to verify the account. The free plan itself does not
+charge for this API if you stay on Free.
 
 ### 1. Push this repo to GitHub
 
 Already done if you are on `main` at `asadmvtrix/uiforge`.
 
-### 2. Deploy the API on Koyeb
+### 2. Deploy the API on Render
 
-1. Open <https://app.koyeb.com> and sign up / sign in with GitHub.
-2. Click **Create Web Service**.
-3. Choose **GitHub**, install the Koyeb GitHub App if asked, and select
-   `asadmvtrix/uiforge`.
-4. Branch: `main`.
-5. Builder: **Dockerfile** (not buildpack).
-6. Dockerfile location / work directory:
-   - Work directory: `backend`
-   - Dockerfile: `Dockerfile` (inside `backend`)
-7. Instance: **Free** (Frankfurt or Washington, D.C.).
-8. Exposed port:
-   - Port: `8000`
-   - Protocol: `HTTP`
-   - Path: `/`
-9. Health check (recommended):
-   - Protocol: `HTTP`
-   - Path: `/health`
-10. Environment variables:
+1. Open <https://dashboard.render.com> and sign in with GitHub.
+2. Click **New +** → **Blueprint**.
+3. Connect the `asadmvtrix/uiforge` repo if prompted.
+4. Select that repo. Render reads `render.yaml` and shows **uiforge-api**.
+5. Fill in at least one secret (leave unused ones blank):
 
-    | Name | Value |
-    | --- | --- |
-    | `PORT` | `8000` |
-    | `IS_PROD` | `true` |
-    | `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` or `GEMINI_API_KEY` | your key |
+   - `OPENAI_API_KEY` or
+   - `ANTHROPIC_API_KEY` or
+   - `GEMINI_API_KEY`
 
-    Add at least one provider key. Leave the others blank if unused.
+6. Leave `OPENAI_BASE_URL` and `REPLICATE_API_KEY` blank unless you use them.
+7. Click **Apply**.
+8. Wait for the Docker build (often 5–15 minutes the first time). Watch
+   **Logs**.
+9. When status is **Live**, copy the service URL, for example
+   `https://uiforge-api.onrender.com` (your suffix may differ).
+10. Open `https://YOUR-RENDER-URL/health` and confirm `{"ok": true}`.
 
-11. Click **Deploy**. Wait for the build (often 5–15 minutes the first time).
-12. Copy the public URL, for example `https://uiforge-xxxx.koyeb.app`.
-13. Open `https://YOUR-KOYEB-URL/health` and confirm `{"ok": true}`.
-
-The free instance sleeps after about an hour with no traffic. The first
-generate after that can take ~30–90 seconds while it wakes up.
+Free services sleep after inactivity. The first generate after sleep can take
+about a minute while Render wakes the container.
 
 ### 3. Deploy the website on Vercel
 
@@ -59,12 +49,12 @@ generate after that can take ~30–90 seconds while it wakes up.
 
    | Name | Value |
    | --- | --- |
-   | `VITE_HTTP_BACKEND_URL` | `https://YOUR-KOYEB-URL` |
-   | `VITE_WS_BACKEND_URL` | `wss://YOUR-KOYEB-URL` |
+   | `VITE_HTTP_BACKEND_URL` | `https://YOUR-RENDER-URL` |
+   | `VITE_WS_BACKEND_URL` | `wss://YOUR-RENDER-URL` |
 
 4. Deploy. Open the Vercel URL → `/studio` → generate.
 
-If you change the Koyeb URL later, update the Vercel env vars and **Redeploy**.
+If you change the Render URL later, update the Vercel env vars and **Redeploy**.
 Vite bakes those values in at build time.
 
 ## Local development
