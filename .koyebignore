@@ -1,0 +1,11 @@
+# Ignore frontend-only and docs-only changes for API redeploys.
+frontend/
+docs/
+*.md
+.env.example
+frontend/.env.example
+vercel.json
+.vercelignore
+render.yaml
+scripts/
+.github/

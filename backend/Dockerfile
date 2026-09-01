@@ -2,7 +2,7 @@ FROM python:3.12.3-slim-bullseye
 
 ENV POETRY_VERSION=1.8.0 \
     PYTHONUNBUFFERED=1 \
-    PORT=7001
+    PORT=8000
 
 RUN pip install "poetry==$POETRY_VERSION"
 
@@ -15,6 +15,6 @@ RUN poetry config virtualenvs.create false \
 
 COPY ./ /app/
 
-EXPOSE 7001
+EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-7001}"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
