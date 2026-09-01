@@ -16,7 +16,7 @@ function MediaThumbnail({
   if (!firstImage && !firstVideo) return null;
 
   return (
-    <div className="shrink-0 w-12 h-12 rounded-md overflow-hidden border border-gray-200 dark:border-zinc-700 bg-gray-100 dark:bg-zinc-800">
+    <div className="shrink-0 w-12 h-12 rounded-xl overflow-hidden border border-gray-200 dark:border-zinc-700 bg-gray-100 dark:bg-zinc-800">
       {firstImage ? (
         <img
           src={firstImage}
@@ -78,7 +78,7 @@ function ExpandedMedia({
       {item.images.map((img, i) => (
         <div
           key={`img-${i}`}
-          className="rounded-md overflow-hidden border border-gray-200 dark:border-zinc-700"
+          className="rounded-xl overflow-hidden border border-gray-200 dark:border-zinc-700"
         >
           <img
             src={img}
@@ -91,7 +91,7 @@ function ExpandedMedia({
       {item.videos.map((vid, i) => (
         <div
           key={`vid-${i}`}
-          className="rounded-md overflow-hidden border border-gray-200 dark:border-zinc-700"
+          className="rounded-xl overflow-hidden border border-gray-200 dark:border-zinc-700"
         >
           <video
             ref={i === 0 ? videoRef : undefined}
@@ -146,6 +146,7 @@ export default function HistoryDisplay() {
         return (
           <div
             key={item.hash}
+            data-testid={`version-${versionNumber}`}
             className={`rounded-xl border transition-all ${
               isActive
                 ? "bg-white dark:bg-zinc-800 border-blue-200 dark:border-blue-800 shadow-sm"
@@ -219,7 +220,7 @@ export default function HistoryDisplay() {
                     e.stopPropagation();
                     setExpandedHash(isExpanded ? null : item.hash);
                   }}
-                  className="shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+                  className="shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
                 >
                   {isExpanded ? (
                     <BsChevronDown className="w-3 h-3" />

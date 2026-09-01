@@ -104,7 +104,7 @@ function ScreenRecorder({
   return (
     <div className="flex items-center justify-center my-3">
       {screenRecorderState === ScreenRecorderState.INITIAL && (
-        <Button onClick={startScreenRecording}>Record Screen</Button>
+        <Button onClick={startScreenRecording} className="btn-studio-action">Record Screen</Button>
       )}
 
       {screenRecorderState === ScreenRecorderState.RECORDING && (
@@ -127,7 +127,7 @@ function ScreenRecorder({
               muted
               autoPlay
               loop
-              className="w-full border border-gray-200 rounded-md"
+              className="w-full border border-gray-200 rounded-xl"
               src={screenRecordingDataUrl}
             />
           )}

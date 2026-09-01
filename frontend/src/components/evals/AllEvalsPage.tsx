@@ -9,7 +9,7 @@ function AllEvalsPage() {
             Evals Dashboard
           </h1>
           <Link 
-            to="/"
+            to="/studio"
             className="text-sm text-gray-500 hover:text-gray-700 flex items-center"
           >
             ← Back To App
@@ -18,7 +18,7 @@ function AllEvalsPage() {
         <div className="space-y-4">
           <Link
             to="/evals/run"
-            className="block w-full p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200"
+            className="block w-full p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow border border-gray-200"
           >
             <h2 className="text-xl font-semibold text-gray-800">Run Evals</h2>
             <p className="text-gray-600">
@@ -28,7 +28,7 @@ function AllEvalsPage() {
 
           <Link
             to="/evals/pairwise"
-            className="block w-full p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200"
+            className="block w-full p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow border border-gray-200"
           >
             <h2 className="text-xl font-semibold text-gray-800">
               Pairwise Comparison
@@ -40,7 +40,7 @@ function AllEvalsPage() {
 
           <Link
             to="/evals/best-of-n"
-            className="block w-full p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200"
+            className="block w-full p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow border border-gray-200"
           >
             <h2 className="text-xl font-semibold text-gray-800">Best of N</h2>
             <p className="text-gray-600">
@@ -50,7 +50,7 @@ function AllEvalsPage() {
 
           <Link
             to="/evals/single"
-            className="block w-full p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200"
+            className="block w-full p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow border border-gray-200"
           >
             <h2 className="text-xl font-semibold text-gray-800">
               Single Model Eval
@@ -60,7 +60,7 @@ function AllEvalsPage() {
 
           <Link
             to="/evals/openai-input-compare"
-            className="block w-full p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200"
+            className="block w-full p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow border border-gray-200"
           >
             <h2 className="text-xl font-semibold text-gray-800">
               OpenAI Input Compare

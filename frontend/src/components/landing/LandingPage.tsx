@@ -13,16 +13,16 @@ function Reveal({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-30px" });
+  const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
     <m.div
       ref={ref}
-      initial={{ opacity: 0, y: 18 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
+      initial={{ opacity: 0, y: 48, scale: 0.97, filter: "blur(6px)" }}
+      animate={inView ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" } : {}}
       transition={{
-        duration: 0.6,
+        duration: 0.8,
         delay,
-        ease: [0.25, 0.1, 0.25, 1] as const,
+        ease: [0.12, 0.8, 0.32, 1] as const,
       }}
       className={className}
     >
@@ -59,22 +59,28 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 antialiased selection:bg-indigo-200/70 dark:selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-white dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 antialiased">
       {/* ─── NAV ─── */}
       <nav
         className="fixed inset-x-0 top-0 z-50 backdrop-blur-lg bg-white/85 dark:bg-zinc-950/80 border-b border-gray-200 dark:border-zinc-800/60 shadow-sm shadow-gray-200/50 dark:shadow-black/20"
       >
-        <div className="mx-auto flex h-12 max-w-5xl items-center justify-between px-5">
-          <a href="/" className="flex items-center gap-2">
-            <img src="/favicon/main.png" alt="" className="h-5 w-5 dark:invert" />
-            <span className="text-[15px] font-bold tracking-tight text-gray-900 dark:text-white">
-              UI<span className="bg-gradient-to-r from-indigo-600 to-violet-500 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">Forge</span>
+        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+          <a href="/" className="flex items-center gap-2.5 group">
+            {/* Branded icon mark */}
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 shadow-sm shadow-indigo-500/30 group-hover:bg-indigo-500 transition-colors">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="16 18 22 12 16 6" />
+                <polyline points="8 6 2 12 8 18" />
+              </svg>
+            </div>
+            <span className="text-[15px] font-semibold tracking-[-0.02em] text-gray-900 dark:text-white">
+              UIForge
             </span>
           </a>
           <div className="flex items-center gap-1">
             <button
               onClick={toggleTheme}
-              className="grid h-7 w-7 place-items-center rounded-md text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors"
+              className="grid h-7 w-7 place-items-center rounded-full text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors"
               aria-label="Toggle theme"
             >
               {isDark ? <LuSun className="h-3.5 w-3.5" /> : <LuMoon className="h-3.5 w-3.5" />}
@@ -83,7 +89,7 @@ export default function LandingPage() {
               href="https://github.com/asadmvtrix/uiforge"
               target="_blank"
               rel="noopener noreferrer"
-              className="grid h-7 w-7 place-items-center rounded-md text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors"
+              className="grid h-7 w-7 place-items-center rounded-full text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors"
               aria-label="GitHub"
             >
               <LuGithub className="h-3.5 w-3.5" />
@@ -91,7 +97,7 @@ export default function LandingPage() {
             <m.button
               whileTap={{ scale: 0.97 }}
               onClick={() => navigate("/studio")}
-              className="btn-gradient-hover ml-1.5 h-7 rounded-md bg-gray-900 dark:bg-white px-3 text-xs font-medium text-white dark:text-gray-900"
+              className="btn-gradient-hover ml-1.5 h-7 rounded-full bg-gray-900 dark:bg-white px-3 text-xs font-medium text-white dark:text-gray-900"
             >
               Launch App
             </m.button>
@@ -100,7 +106,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ─── HERO ─── */}
-      <section className="relative pt-32 pb-10 sm:pt-40 sm:pb-14 overflow-hidden">
+      <section className="relative pt-36 pb-10 sm:pt-44 sm:pb-14 overflow-hidden">
         {/* Glow */}
         <div className="pointer-events-none absolute -top-48 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-gradient-to-b from-indigo-300/25 via-indigo-200/10 to-transparent dark:from-indigo-500/15 dark:via-indigo-500/5 blur-3xl" />
 
@@ -133,7 +139,7 @@ export default function LandingPage() {
               <m.button
                 whileTap={{ scale: 0.97 }}
                 onClick={() => navigate("/studio")}
-                className="btn-gradient-hover group inline-flex h-10 w-40 items-center justify-center gap-2 rounded-lg bg-gray-900 dark:bg-white px-5 text-sm font-medium text-white dark:text-gray-900 shadow-sm"
+                className="btn-gradient-hover group inline-flex h-10 w-40 items-center justify-center gap-2 rounded-full bg-gray-900 dark:bg-white px-5 text-sm font-medium text-white dark:text-gray-900 shadow-sm"
               >
                 Open Studio
                 <LuArrowRight className="h-3.5 w-3.5 opacity-40 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -142,7 +148,7 @@ export default function LandingPage() {
                 href="https://github.com/asadmvtrix/uiforge"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-outline-hover inline-flex h-10 w-40 items-center justify-center gap-2 rounded-lg border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-5 text-sm font-medium text-gray-600 dark:text-zinc-300 shadow-sm"
+                className="btn-outline-hover inline-flex h-10 w-40 items-center justify-center gap-2 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-5 text-sm font-medium text-gray-600 dark:text-zinc-300 shadow-sm"
               >
                 <LuGithub className="h-3.5 w-3.5" />
                 View Source
@@ -167,7 +173,7 @@ export default function LandingPage() {
               <div className="grid sm:grid-cols-2 min-h-[340px]">
                 {/* Left */}
                 <div className="flex flex-col items-center justify-center p-8 sm:p-10 border-b sm:border-b-0 sm:border-r border-gray-100 dark:border-zinc-800">
-                  <div className="w-full max-w-[260px] aspect-[4/3] rounded-lg border-2 border-dashed border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800/50 flex flex-col items-center justify-center gap-3">
+                  <div className="w-full max-w-[260px] aspect-[4/3] rounded-xl border-2 border-dashed border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800/50 flex flex-col items-center justify-center gap-3">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gray-300 dark:text-zinc-600">
                       <rect x="3" y="3" width="18" height="18" rx="2" />
                       <circle cx="8.5" cy="8.5" r="1.5" />
@@ -181,52 +187,41 @@ export default function LandingPage() {
 
                 {/* Right — code output */}
                 <div className="flex flex-col justify-center p-8 sm:p-10 bg-gray-50 dark:bg-zinc-950">
-                  <pre className="font-mono text-xs leading-6 text-gray-500 dark:text-zinc-500 overflow-hidden">
+                  <pre className="font-mono text-[11px] leading-[1.8] text-gray-500 dark:text-zinc-500 overflow-hidden">
                     <code>
-                      <span className="text-violet-600 dark:text-violet-400">{"<div"}</span>
-                      {" "}
-                      <span className="text-sky-600 dark:text-sky-400">class</span>
-                      {"="}
-                      <span className="text-amber-600 dark:text-amber-400">{'"flex items-center p-4"'}</span>
-                      <span className="text-violet-600 dark:text-violet-400">{">"}</span>
-                      {"\n"}
-                      {"  "}
-                      <span className="text-violet-600 dark:text-violet-400">{"<img"}</span>
-                      {" "}
-                      <span className="text-sky-600 dark:text-sky-400">src</span>
-                      {"="}
-                      <span className="text-amber-600 dark:text-amber-400">{'"avatar.jpg"'}</span>
-                      {" />\n"}
-                      {"  "}
-                      <span className="text-violet-600 dark:text-violet-400">{"<div"}</span>
-                      {" "}
-                      <span className="text-sky-600 dark:text-sky-400">class</span>
-                      {"="}
-                      <span className="text-amber-600 dark:text-amber-400">{'"ml-3"'}</span>
-                      <span className="text-violet-600 dark:text-violet-400">{">"}</span>
-                      {"\n"}
-                      {"    "}
-                      <span className="text-violet-600 dark:text-violet-400">{"<h2"}</span>
-                      {" "}
-                      <span className="text-sky-600 dark:text-sky-400">class</span>
-                      {"="}
-                      <span className="text-amber-600 dark:text-amber-400">{'"font-bold"'}</span>
+                      <span className="text-gray-400 dark:text-zinc-600">{"<!-- Hero section -->"}</span>{"\n"}
+                      <span className="text-violet-600 dark:text-violet-400">{"<section"}</span>
+                      {" "}<span className="text-sky-600 dark:text-sky-400">{"class"}</span>
+                      {"="}<span className="text-amber-600 dark:text-amber-400">{'"relative bg-white py-24"'}</span>
+                      <span className="text-violet-600 dark:text-violet-400">{">"}</span>{"\n"}
+                      {"  "}<span className="text-violet-600 dark:text-violet-400">{"<div"}</span>
+                      {" "}<span className="text-sky-600 dark:text-sky-400">{"class"}</span>
+                      {"="}<span className="text-amber-600 dark:text-amber-400">{'"mx-auto max-w-5xl px-6"'}</span>
+                      <span className="text-violet-600 dark:text-violet-400">{">"}</span>{"\n"}
+                      {"    "}<span className="text-violet-600 dark:text-violet-400">{"<h1"}</span>
+                      {" "}<span className="text-sky-600 dark:text-sky-400">{"class"}</span>
+                      {"="}<span className="text-amber-600 dark:text-amber-400">{'"text-5xl font-bold tracking-tight"'}</span>
                       <span className="text-violet-600 dark:text-violet-400">{">"}</span>
                       <span className="text-gray-400 dark:text-zinc-600">{"..."}</span>
-                      {"\n"}
-                      {"    "}
-                      <span className="text-violet-600 dark:text-violet-400">{"<p"}</span>
-                      {" "}
-                      <span className="text-sky-600 dark:text-sky-400">class</span>
-                      {"="}
-                      <span className="text-amber-600 dark:text-amber-400">{'"text-sm text-gray-500"'}</span>
+                      <span className="text-violet-600 dark:text-violet-400">{"</h1>"}</span>{"\n"}
+                      {"    "}<span className="text-violet-600 dark:text-violet-400">{"<p"}</span>
+                      {" "}<span className="text-sky-600 dark:text-sky-400">{"class"}</span>
+                      {"="}<span className="text-amber-600 dark:text-amber-400">{'"mt-4 text-lg text-gray-500"'}</span>
                       <span className="text-violet-600 dark:text-violet-400">{">"}</span>
                       <span className="text-gray-400 dark:text-zinc-600">{"..."}</span>
+                      <span className="text-violet-600 dark:text-violet-400">{"</p>"}</span>{"\n"}
+                      {"    "}<span className="text-violet-600 dark:text-violet-400">{"<div"}</span>
+                      {" "}<span className="text-sky-600 dark:text-sky-400">{"class"}</span>
+                      {"="}<span className="text-amber-600 dark:text-amber-400">{'"mt-8 flex gap-3"'}</span>
+                      <span className="text-violet-600 dark:text-violet-400">{">"}</span>{"\n"}
+                      {"      "}<span className="text-violet-600 dark:text-violet-400">{"<button"}</span>
+                      {" "}<span className="text-sky-600 dark:text-sky-400">{"class"}</span>
+                      {"="}<span className="text-amber-600 dark:text-amber-400">{'"rounded-full bg-indigo-600 px-6"'}</span>
+                      <span className="text-violet-600 dark:text-violet-400">{">"}</span>
+                      <span className="text-gray-400 dark:text-zinc-600">{"..."}</span>
+                      <span className="text-violet-600 dark:text-violet-400">{"</button>"}</span>
                     </code>
                   </pre>
-                  <p className="mt-4 text-xs text-gray-400 dark:text-zinc-600 text-center">
-                    → clean Tailwind code
-                  </p>
                 </div>
               </div>
             </div>
@@ -273,7 +268,7 @@ export default function LandingPage() {
                 <m.div
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.15 }}
-                  className="card-hover-border rounded-lg border border-gray-200/80 dark:border-zinc-700/50 bg-white/80 dark:bg-zinc-900/40 backdrop-blur-sm p-6 h-full shadow-md shadow-gray-200/40 dark:shadow-black/20 transition-shadow duration-200 hover:shadow-md hover:shadow-gray-300/50 dark:hover:shadow-black/20"
+                  className="card-hover-border rounded-xl border border-gray-200/80 dark:border-zinc-700/50 bg-white/80 dark:bg-zinc-900/40 backdrop-blur-sm p-6 h-full shadow-md shadow-gray-200/40 dark:shadow-black/20 transition-shadow duration-200 hover:shadow-md hover:shadow-gray-300/50 dark:hover:shadow-black/20"
                 >
                   <span className="text-[11px] font-mono text-gray-300 dark:text-zinc-700">{item.n}</span>
                   <p className="mt-2 text-base font-semibold text-gray-900 dark:text-zinc-100">{item.t}</p>
@@ -379,7 +374,7 @@ export default function LandingPage() {
                 <m.div
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.15 }}
-                  className="card-hover-border rounded-lg border border-gray-200/80 dark:border-zinc-700/50 bg-white/80 dark:bg-zinc-900/40 backdrop-blur-sm p-5 h-full shadow-md shadow-gray-200/40 dark:shadow-black/20 transition-shadow duration-200 hover:shadow-md hover:shadow-gray-300/50 dark:hover:shadow-black/20"
+                  className="card-hover-border rounded-xl border border-gray-200/80 dark:border-zinc-700/50 bg-white/80 dark:bg-zinc-900/40 backdrop-blur-sm p-5 h-full shadow-md shadow-gray-200/40 dark:shadow-black/20 transition-shadow duration-200 hover:shadow-md hover:shadow-gray-300/50 dark:hover:shadow-black/20"
                 >
                   <span className="inline-block text-[10px] font-semibold uppercase tracking-wider text-indigo-500 dark:text-indigo-400 mb-2">
                     {f.tag}
@@ -412,7 +407,7 @@ export default function LandingPage() {
               { q: "Does it handle dark UIs?", a: "The vision model reads whatever's in the screenshot. Dark themes, gradients, glassmorphism — all work. Output matches the input theme." },
             ].map((item, i) => (
               <Reveal key={item.q} delay={i * 0.04}>
-                <div className="card-hover-border rounded-lg border border-gray-200/80 dark:border-zinc-700/50 bg-white/80 dark:bg-zinc-900/40 backdrop-blur-sm p-5 shadow-md shadow-gray-200/40 dark:shadow-black/20">
+                <div className="card-hover-border rounded-xl border border-gray-200/80 dark:border-zinc-700/50 bg-white/80 dark:bg-zinc-900/40 backdrop-blur-sm p-5 shadow-md shadow-gray-200/40 dark:shadow-black/20">
                   <p className="text-sm font-semibold text-gray-900 dark:text-zinc-100">{item.q}</p>
                   <p className="mt-2 text-[13px] leading-[1.65] text-gray-500 dark:text-zinc-400">{item.a}</p>
                 </div>
@@ -435,7 +430,7 @@ export default function LandingPage() {
             <m.button
               whileTap={{ scale: 0.97 }}
               onClick={() => navigate("/studio")}
-              className="btn-gradient-hover group mt-7 inline-flex h-10 items-center gap-2 rounded-lg bg-gray-900 dark:bg-white px-6 text-sm font-medium text-white dark:text-gray-900 shadow-sm"
+              className="btn-gradient-hover group mt-7 inline-flex h-10 items-center gap-2 rounded-full bg-gray-900 dark:bg-white px-6 text-sm font-medium text-white dark:text-gray-900 shadow-sm"
             >
               Open Studio
               <LuArrowRight className="h-3.5 w-3.5 opacity-40 transition-transform group-hover:translate-x-0.5" />

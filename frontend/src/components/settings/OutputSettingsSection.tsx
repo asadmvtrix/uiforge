@@ -23,21 +23,20 @@ function OutputSettingsSection({
   shouldDisableUpdates = false,
 }: Props) {
   return (
-    <div className="flex flex-col gap-y-2 justify-between text-sm">
-      <div className="grid grid-cols-3 items-center gap-4">
-        <span>{label}</span>
-        <Select
-          value={stack ?? ""}
-          onValueChange={(value: string) => setStack(value as Stack)}
-          disabled={shouldDisableUpdates}
+    <div className="flex items-center gap-2 text-sm">
+      <span className="shrink-0 text-gray-500 dark:text-zinc-400">{label}</span>
+      <Select
+        value={stack ?? ""}
+        onValueChange={(value: string) => setStack(value as Stack)}
+        disabled={shouldDisableUpdates}
+      >
+        <SelectTrigger
+          className="w-48"
+          id="output-settings-js"
+          data-testid="stack-select"
         >
-          <SelectTrigger
-            className="col-span-2"
-            id="output-settings-js"
-            data-testid="stack-select"
-          >
-            <SelectValue placeholder="Select a stack" />
-          </SelectTrigger>
+          <SelectValue placeholder="Select a stack" />
+        </SelectTrigger>
           <SelectContent side="top">
             <SelectGroup>
               {Object.values(Stack).map((stack) => (
@@ -50,7 +49,7 @@ function OutputSettingsSection({
             </SelectGroup>
           </SelectContent>
         </Select>
-      </div>
+
     </div>
   );
 }

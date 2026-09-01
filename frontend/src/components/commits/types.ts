@@ -7,14 +7,49 @@ export type VariantStatus = "generating" | "complete" | "cancelled" | "error";
 export type AgentEventStatus = "running" | "complete" | "error";
 export type AgentEventType = "thinking" | "assistant" | "tool";
 
+export type AgentToolInput = Record<string, unknown>;
+export type AgentToolOutput = Record<string, unknown>;
+
+export type AgentFileEdit = {
+  old_text?: string;
+  new_text?: string;
+  replaced?: number;
+};
+
+export type AgentGeneratedImage = {
+  prompt?: string;
+  url?: string;
+};
+
+export type AgentBackgroundRemovalImage = {
+  image_url?: string;
+  result_url?: string | null;
+};
+
+export type AgentToolStartData = {
+  name?: string;
+  input?: AgentToolInput;
+};
+
+export type AgentToolResultData = {
+  name?: string;
+  output?: AgentToolOutput;
+  ok?: boolean;
+};
+
+export type AgentWsPayloadData = AgentToolStartData &
+  AgentToolResultData & {
+    models?: string[];
+  };
+
 export type AgentEvent = {
   id: string;
   type: AgentEventType;
   status: AgentEventStatus;
   content?: string;
   toolName?: string;
-  input?: any;
-  output?: any;
+  input?: AgentToolInput;
+  output?: AgentToolOutput;
   startedAt: number;
   endedAt?: number;
 };

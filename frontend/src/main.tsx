@@ -9,7 +9,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import LandingPage from "./components/landing/LandingPage.tsx";
-import { AnimatePresence, LazyMotion, domAnimation, m } from "framer-motion";
+import { AnimatePresence, LazyMotion, domMax, m } from "framer-motion";
 
 // Lazy-load heavy routes so they don't block initial paint
 const App = lazy(() => import("./App.tsx"));
@@ -26,7 +26,7 @@ const pageVariants = {
   exit: { opacity: 0, transition: { duration: 0.15 } },
 };
 
-function LoadingScreen() {
+export function LoadingScreen() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-zinc-950">
       <m.div
@@ -55,7 +55,7 @@ function LoadingScreen() {
   );
 }
 
-function AnimatedRoutes() {
+export function AnimatedRoutes() {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
@@ -90,7 +90,7 @@ function AnimatedRoutes() {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Router>
-      <LazyMotion features={domAnimation} strict>
+      <LazyMotion features={domMax} strict>
         <AnimatedRoutes />
       </LazyMotion>
     </Router>

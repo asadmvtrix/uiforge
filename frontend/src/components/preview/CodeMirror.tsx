@@ -22,9 +22,19 @@ interface Props {
 function CodeMirror({ code, editorTheme, onCodeChange }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView | null>(null);
+  // Held in refs so that a new editor state (and view) is only built when the
+  // theme changes, not whenever the parent passes a new callback or new code.
+  const onCodeChangeRef = useRef(onCodeChange);
+  const codeRef = useRef(code);
+
+  useEffect(() => {
+    onCodeChangeRef.current = onCodeChange;
+  }, [onCodeChange]);
+
   const editorState = useMemo(
     () =>
       EditorState.create({
+        doc: codeRef.current,
         extensions: [
           history(),
           keymap.of([
@@ -41,7 +51,7 @@ function CodeMirror({ code, editorTheme, onCodeChange }: Props) {
           EditorView.updateListener.of((update: ViewUpdate) => {
             if (update.docChanged) {
               const updatedCode = update.state.doc.toString();
-              onCodeChange(updatedCode);
+              onCodeChangeRef.current(updatedCode);
             }
           }),
         ],
@@ -60,9 +70,10 @@ function CodeMirror({ code, editorTheme, onCodeChange }: Props) {
         view.current = null;
       }
     };
-  }, []);
+  }, [editorState]);
 
   useEffect(() => {
+    codeRef.current = code;
     if (view.current && view.current.state.doc.toString() !== code) {
       view.current.dispatch({
         changes: { from: 0, to: view.current.state.doc.length, insert: code },

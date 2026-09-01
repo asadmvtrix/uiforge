@@ -1,10 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ComponentType, type CSSProperties } from "react";
 import { useProjectStore } from "../../store/project-store";
 import { useAppStore } from "../../store/app-store";
 import { AppState } from "../../types";
 import {
+  AgentBackgroundRemovalImage,
   AgentEvent,
   AgentEventType,
+  AgentFileEdit,
+  AgentGeneratedImage,
+  AgentToolInput,
+  AgentToolOutput,
 } from "../commits/types";
 import {
   BsChatDots,
@@ -25,7 +30,13 @@ import { googlecode } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import WorkingPulse from "../core/WorkingPulse";
 
 SyntaxHighlighterBase.registerLanguage("html", html);
-const SyntaxHighlighter = SyntaxHighlighterBase as any;
+const SyntaxHighlighter = SyntaxHighlighterBase as unknown as ComponentType<{
+  language?: string;
+  style?: Record<string, CSSProperties>;
+  customStyle?: CSSProperties;
+  wrapLongLines?: boolean;
+  children?: string;
+}>;
 
 function CodePreviewBlock({ code, isGenerating }: { code: string; isGenerating: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,7 +49,7 @@ function CodePreviewBlock({ code, isGenerating }: { code: string; isGenerating: 
   }, [code, isGenerating]);
 
   return (
-    <div ref={containerRef} className="max-h-60 overflow-auto rounded-md">
+    <div ref={containerRef} className="max-h-60 overflow-auto rounded-xl">
       <SyntaxHighlighter
         language="html"
         style={isDark ? vs2015 : googlecode}
@@ -86,6 +97,72 @@ function formatVariantWallClockDuration(
   return formatDurationMs(Math.max(0, end - requestStartedAt));
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function asToolRecord(
+  value: AgentToolInput | AgentToolOutput | undefined
+): Record<string, unknown> | undefined {
+  return isRecord(value) ? value : undefined;
+}
+
+function asStringList(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.map((item) => (typeof item === "string" ? item : String(item)));
+}
+
+function asFileEdits(value: unknown): AgentFileEdit[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.map((item) => {
+    const rec = isRecord(item) ? item : {};
+    return {
+      old_text: typeof rec.old_text === "string" ? rec.old_text : undefined,
+      new_text: typeof rec.new_text === "string" ? rec.new_text : undefined,
+      replaced: typeof rec.replaced === "number" ? rec.replaced : undefined,
+    };
+  });
+}
+
+function asGeneratedImages(value: unknown): AgentGeneratedImage[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.map((item) => {
+    const rec = isRecord(item) ? item : {};
+    return {
+      prompt: typeof rec.prompt === "string" ? rec.prompt : undefined,
+      url: typeof rec.url === "string" ? rec.url : undefined,
+    };
+  });
+}
+
+function asBackgroundRemovalImages(
+  value: unknown
+): AgentBackgroundRemovalImage[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.map((item) => {
+    const rec = isRecord(item) ? item : {};
+    return {
+      image_url: typeof rec.image_url === "string" ? rec.image_url : undefined,
+      result_url:
+        typeof rec.result_url === "string" ? rec.result_url : null,
+    };
+  });
+}
+
+function arrayLength(value: unknown): number | undefined {
+  return Array.isArray(value) ? value.length : undefined;
+}
+
+function renderErrorMessage(error: unknown): string {
+  if (typeof error === "string") return error;
+  if (typeof error === "number" || typeof error === "boolean") return String(error);
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}
+
 
 function getEventIcon(type: AgentEventType, toolName?: string) {
   if (type === "thinking") {
@@ -129,18 +206,24 @@ function getEventTitle(event: AgentEvent): string {
       return event.status === "running" ? "Editing file" : "Edited file";
     }
     if (event.toolName === "generate_images") {
-      const input = event.input as any;
-      const output = event.output as any;
-      const count = output?.images?.length || input?.count || 0;
+      const input = asToolRecord(event.input);
+      const output = asToolRecord(event.output);
+      const count =
+        arrayLength(output?.images) ||
+        (typeof input?.count === "number" ? input.count : 0) ||
+        0;
       if (event.status === "running") {
         return count ? `Generating ${count} image${count !== 1 ? "s" : ""}` : "Generating images";
       }
       return count ? `Generated ${count} image${count !== 1 ? "s" : ""}` : "Generated images";
     }
     if (event.toolName === "remove_background") {
-      const rbInput = event.input as any;
-      const rbOutput = event.output as any;
-      const rbCount = rbOutput?.images?.length || rbInput?.image_urls?.length || 0;
+      const rbInput = asToolRecord(event.input);
+      const rbOutput = asToolRecord(event.output);
+      const rbCount =
+        arrayLength(rbOutput?.images) ||
+        arrayLength(rbInput?.image_urls) ||
+        0;
       if (event.status === "running") {
         return rbCount > 1 ? `Removing ${rbCount} backgrounds` : "Removing background";
       }
@@ -172,27 +255,28 @@ function renderToolDetails(event: AgentEvent, variantCode?: string) {
       json = json.slice(0, 900) + "...";
     }
     return (
-      <pre className="mt-2 rounded-md bg-gray-50 dark:bg-gray-800 p-2 text-xs text-gray-700 dark:text-gray-200 overflow-x-auto">
+      <pre className="mt-2 rounded-xl bg-gray-50 dark:bg-gray-800 p-2 text-xs text-gray-700 dark:text-gray-200 overflow-x-auto">
         {json}
       </pre>
     );
   };
 
-  const output = event.output as any;
-  const input = event.input as any;
+  const output = asToolRecord(event.output);
+  const input = asToolRecord(event.input);
   const hasError = Boolean(output?.error);
-  const images =
-    output && Array.isArray(output.images) ? (output.images as Array<any>) : null;
-  const edits =
-    output && Array.isArray(output.edits) ? (output.edits as Array<any>) : null;
+  const images = asGeneratedImages(output?.images) ?? null;
+  const edits = asFileEdits(output?.edits) ?? null;
+  const prompts = asStringList(input?.prompts);
+  const sourceImageUrls = asStringList(input?.image_urls);
+  const backgroundImages = asBackgroundRemovalImages(output?.images);
 
   return (
     <div className="text-sm text-gray-700 dark:text-gray-200">
       {hasError && (
-        <div className="rounded-md border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/30 p-3">
+        <div className="rounded-xl border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/30 p-3">
           <div className="text-xs uppercase tracking-wide text-red-500">Error</div>
           <div className="mt-1 text-sm text-red-700 dark:text-red-200">
-            {output?.error}
+            {renderErrorMessage(output?.error)}
           </div>
           {event.input && (
             <div className="mt-2">
@@ -213,7 +297,7 @@ function renderToolDetails(event: AgentEvent, variantCode?: string) {
           {edits.map((edit, index) => (
             <div
               key={`${edit.old_text}-${index}`}
-              className="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900/60 p-3"
+              className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900/60 p-3"
             >
               <div className="text-xs uppercase tracking-wide text-gray-400">
                 Edit {index + 1}
@@ -245,9 +329,9 @@ function renderToolDetails(event: AgentEvent, variantCode?: string) {
       {event.toolName === "generate_images" && !hasError && (
         <div>
           {/* While running: show prompts with dividers */}
-          {event.status === "running" && input?.prompts && Array.isArray(input.prompts) && (
+          {event.status === "running" && prompts && (
             <div className="divide-y divide-gray-100 dark:divide-gray-800">
-              {input.prompts.map((prompt: string, index: number) => (
+              {prompts.map((prompt, index) => (
                 <div key={index} className="text-xs text-gray-600 dark:text-gray-400 py-1.5">
                   {prompt}
                 </div>
@@ -286,9 +370,9 @@ function renderToolDetails(event: AgentEvent, variantCode?: string) {
       {event.toolName === "remove_background" && !hasError && (
         <div>
           {/* While running: show the source images */}
-          {event.status === "running" && input?.image_urls && Array.isArray(input.image_urls) && (
+          {event.status === "running" && sourceImageUrls && (
             <div className="divide-y divide-gray-100 dark:divide-gray-800">
-              {input.image_urls.map((url: string, index: number) => (
+              {sourceImageUrls.map((url, index) => (
                 <div key={index} className="py-2">
                   <img
                     src={url}
@@ -301,9 +385,9 @@ function renderToolDetails(event: AgentEvent, variantCode?: string) {
             </div>
           )}
           {/* After complete: before/after side by side for each image */}
-          {event.status !== "running" && output?.images && Array.isArray(output.images) && (
+          {event.status !== "running" && backgroundImages && (
             <div className="divide-y divide-gray-100 dark:divide-gray-800">
-              {output.images.map((item: any, index: number) => (
+              {backgroundImages.map((item, index) => (
                 <div key={`${item.image_url}-${index}`} className="flex gap-2 py-2">
                   <div className="w-1/2">
                     <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Before</div>
@@ -401,7 +485,7 @@ function AgentEventCard({
               <div className="my-2 flex justify-start max-w-full">
                 <img
                   {...props}
-                  className="max-h-60 max-w-full object-contain rounded-lg border border-gray-200 dark:border-gray-700"
+                  className="max-h-60 max-w-full object-contain rounded-xl border border-gray-200 dark:border-gray-700"
                   loading="lazy"
                 />
               </div>
@@ -440,7 +524,7 @@ function AgentEventCard({
                     <div className="my-2 flex justify-start max-w-full">
                       <img
                         {...props}
-                        className="max-h-60 max-w-full object-contain rounded-lg border border-gray-200 dark:border-gray-700"
+                        className="max-h-60 max-w-full object-contain rounded-xl border border-gray-200 dark:border-gray-700"
                         loading="lazy"
                       />
                     </div>

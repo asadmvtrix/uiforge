@@ -369,7 +369,7 @@ class ModelSelectionStage:
     ) -> List[Llm]:
         """Select appropriate models based on available API keys"""
         try:
-            num_variants = 2 if generation_type == "update" else NUM_VARIANTS
+            num_variants = NUM_VARIANTS
             variant_models = self._get_variant_models(
                 generation_type,
                 input_mode,
@@ -388,7 +388,7 @@ class ModelSelectionStage:
         except Exception:
             await self.throw_error(
                 "No OpenAI, Anthropic, or Gemini API key found. Please add the environment variable "
-                "OPENAI_API_KEY, ANTHROPIC_API_KEY, or GEMINI_API_KEY to backend/.env or in the settings dialog. "
+                "OPENAI_API_KEY, ANTHROPIC_API_KEY, or GEMINI_API_KEY to the root .env file or in the settings dialog. "
                 "If you add it to .env, make sure to restart the backend server."
             )
             raise Exception("No API key")
@@ -409,7 +409,7 @@ class ModelSelectionStage:
             if not gemini_api_key:
                 raise Exception(
                     "Video mode requires a Gemini API key. "
-                    "Please add GEMINI_API_KEY to backend/.env or in the settings dialog"
+                    "Please add GEMINI_API_KEY to the root .env file or in the settings dialog"
                 )
             return list(VIDEO_VARIANT_MODELS)
 
@@ -586,11 +586,6 @@ class AgenticGenerationStage:
             error_message = (
                 "Incorrect OpenAI key. Please make sure your OpenAI API key is correct, "
                 "or create a new OpenAI API key on your OpenAI dashboard."
-                + (
-                    " Alternatively, you can purchase code generation credits directly on this website."
-                    if IS_PROD
-                    else ""
-                )
             )
             await self.send_message("variantError", error_message, index, None, None)
             return ""
@@ -601,11 +596,6 @@ class AgenticGenerationStage:
                 + ". Please make sure you have followed the instructions correctly to obtain "
                 "an OpenAI key with GPT vision access: "
                 "https://github.com/asadmvtrix/uiforge/blob/main/Troubleshooting.md"
-                + (
-                    " Alternatively, you can purchase code generation credits directly on this website."
-                    if IS_PROD
-                    else ""
-                )
             )
             await self.send_message("variantError", error_message, index, None, None)
             return ""
@@ -613,11 +603,6 @@ class AgenticGenerationStage:
             print(f"[VARIANT {index + 1}] OpenAI Rate limit exceeded", e)
             error_message = (
                 "OpenAI error - 'You exceeded your current quota, please check your plan and billing details.'"
-                + (
-                    " Alternatively, you can purchase code generation credits directly on this website."
-                    if IS_PROD
-                    else ""
-                )
             )
             await self.send_message("variantError", error_message, index, None, None)
             return ""

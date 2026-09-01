@@ -55,7 +55,9 @@ describeE2E("qa e2e flows", () => {
     await installDomTestHooks(page);
     await setupRequestInterception(page, SCREENSHOT_WITH_IMAGES);
 
-    await page.goto("http://localhost:5173/", { waitUntil: "networkidle0" });
+    await page.goto("http://localhost:5173/studio", {
+      waitUntil: "networkidle0",
+    });
 
     // Set screen size
     await page.setViewport({ width: 1280, height: 1024 });
@@ -84,21 +86,6 @@ describeE2E("qa e2e flows", () => {
         60 * 1000
       );
 
-      it(
-        `create from URL: ${model} & ${stack}`,
-        async () => {
-          const app = new App(
-            page,
-            stack,
-            model,
-            `create_url_${model}_${stack}`
-          );
-          await app.init();
-          await app.generateFromUrl("https://example.com");
-          await app.resetTestHooks();
-        },
-        60 * 1000
-      );
     });
   });
 
@@ -198,12 +185,10 @@ class App {
   private screenshotPathPrefix: string;
   private page: Page;
   private stack: Stack;
-  private model: string;
 
-  constructor(page: Page, stack: Stack, model: string, testId: string) {
+  constructor(page: Page, stack: Stack, _model: string, testId: string) {
     this.page = page;
     this.stack = stack;
-    this.model = model;
     this.screenshotPathPrefix = `${RESULTS_DIR}/${testId}`;
   }
 
@@ -217,12 +202,10 @@ class App {
       openAiApiKey: "test-openai-key",
       openAiBaseURL: null,
       anthropicApiKey: "test-anthropic-key",
-      screenshotOneApiKey: "test-screenshotone-key",
+      geminiApiKey: "test-gemini-key",
       isImageGenerationEnabled: true,
       editorTheme: "cobalt",
       generatedCodeConfig: this.stack,
-      codeGenerationModel: this.model,
-      accessCode: null,
     };
 
     await this.page.evaluate((nextSetting) => {
@@ -247,13 +230,9 @@ class App {
   }
 
   async waitUntilVersionIsReady(version: string) {
-    await this.page.waitForFunction(
-      (versionLabel) => document.body.innerText.includes(versionLabel),
-      {
-        timeout: 30000,
-      },
-      version
-    );
+    await this.page.waitForSelector(`[data-testid="version-${version}"]`, {
+      timeout: 30000,
+    });
     await this.page.waitForSelector('[data-testid="update-input"]', {
       timeout: 30000,
     });
@@ -263,21 +242,12 @@ class App {
     await this.page.click(`[data-testid="${testId}"]`);
   }
 
-  async generateFromUrl(url: string) {
-    await this.switchToTab("tab-url");
-    await this.page.type('[data-testid="url-input"]', url);
-    await this.takeScreenshot("typed_url");
-    await this.page.click('[data-testid="url-capture"]');
-    await this.waitUntilVersionIsReady("v1");
-    await this.takeScreenshot("url_result");
-  }
-
   async generateFromText(prompt: string) {
     await this.switchToTab("tab-text");
     await this.page.type('[data-testid="text-input"]', prompt);
     await this.takeScreenshot("typed_text");
     await this.page.click('[data-testid="text-generate"]');
-    await this.waitUntilVersionIsReady("v1");
+    await this.waitUntilVersionIsReady("1");
     await this.takeScreenshot("text_result");
   }
 
@@ -294,7 +264,7 @@ class App {
     await this.takeScreenshot("image_uploaded");
 
     await this.page.click('[data-testid="upload-generate"]');
-    await this.waitUntilVersionIsReady("v1");
+    await this.waitUntilVersionIsReady("1");
     await this.takeScreenshot("image_results");
   }
 
@@ -314,30 +284,26 @@ class App {
     });
     await this.takeScreenshot("typed_code");
     await this.page.click('[data-testid="import-submit"]');
-    await this.waitUntilVersionIsReady("v1");
+    await this.waitUntilVersionIsReady("1");
   }
 
   async edit(edit: string, version: string) {
     await this.page.type('[data-testid="update-input"]', edit);
     await this.takeScreenshot(`typed_${version}`);
     await this.page.click(".update-btn");
-    await this.waitUntilVersionIsReady(version);
+    await this.waitUntilVersionIsReady(version.replace(/^v/, ""));
     await this.takeScreenshot(`done_${version}`);
   }
 
   async clickVersion(version: string) {
-    await this.page.evaluate((versionLabel) => {
-      document.querySelectorAll("div").forEach((div) => {
-        if (div.innerText.includes(versionLabel)) {
-          div.click();
-        }
-      });
-    }, version);
+    await this.page.click(
+      `[data-testid="version-${version.replace(/^v/, "")}"]`
+    );
   }
 
   async regenerate() {
-    await this.page.click(".regenerate-btn");
-    await this.waitUntilVersionIsReady("v1");
+    await this.page.click('[data-testid="regenerate"]');
+    await this.waitUntilVersionIsReady("1");
     await this.takeScreenshot("regenerate_results");
   }
 
@@ -421,6 +387,13 @@ async function installDomTestHooks(page: Page) {
 
 async function installMockWebSocket(page: Page) {
   await page.evaluateOnNewDocument(() => {
+    type MockSocketEvent = {
+      data?: string;
+      code?: number;
+      reason?: string;
+    };
+    type MockSocketListener = (event: MockSocketEvent) => void;
+
     class MockWebSocket {
       static CONNECTING = 0;
       static OPEN = 1;
@@ -429,7 +402,7 @@ async function installMockWebSocket(page: Page) {
 
       readyState = MockWebSocket.CONNECTING;
       url: string;
-      listeners: Record<string, Array<(event: any) => void>> = {};
+      listeners: Record<string, MockSocketListener[]> = {};
 
       constructor(url: string) {
         this.url = url;
@@ -439,14 +412,14 @@ async function installMockWebSocket(page: Page) {
         }, 10);
       }
 
-      addEventListener(type: string, listener: (event: any) => void) {
+      addEventListener(type: string, listener: MockSocketListener) {
         if (!this.listeners[type]) {
           this.listeners[type] = [];
         }
         this.listeners[type].push(listener);
       }
 
-      removeEventListener(type: string, listener: (event: any) => void) {
+      removeEventListener(type: string, listener: MockSocketListener) {
         if (!this.listeners[type]) return;
         this.listeners[type] = this.listeners[type].filter(
           (existing) => existing !== listener
@@ -488,7 +461,7 @@ async function installMockWebSocket(page: Page) {
         this.emit("close", { code, reason });
       }
 
-      emit(type: string, event: any) {
+      emit(type: string, event: MockSocketEvent) {
         (this.listeners[type] || []).forEach((listener) => {
           listener(event);
         });

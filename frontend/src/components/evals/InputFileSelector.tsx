@@ -77,8 +77,8 @@ function InputFileSelector({ onFilesSelected }: InputFileSelectorProps) {
 
   return (
     <div className="w-full">
-      <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-md p-2 mb-2 border" 
+      <div
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-xl p-2 mb-2 border"
         onClick={toggleExpanded}
       >
         <div className="flex items-center gap-2">
@@ -114,7 +114,7 @@ function InputFileSelector({ onFilesSelected }: InputFileSelectorProps) {
       </div>
       
       {isExpanded && (
-        <div className="border rounded-md overflow-hidden">
+        <div className="border rounded-xl overflow-hidden">
           <div className="max-h-48 overflow-y-auto">
             <div className="grid grid-cols-1 divide-y divide-gray-100">
               {inputFiles.map((file) => (
@@ -133,7 +133,7 @@ function InputFileSelector({ onFilesSelected }: InputFileSelectorProps) {
                   {selectedFiles.includes(file.path) ? (
                     <BsCheckLg className="h-3 w-3 text-blue-500 flex-shrink-0" />
                   ) : (
-                    <div className="h-3 w-3 border rounded-sm flex-shrink-0" />
+                    <div className="h-3 w-3 border rounded-lg flex-shrink-0" />
                   )}
                 </div>
               ))}

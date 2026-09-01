@@ -174,7 +174,7 @@ function ImageLightbox({ image, onClose }: ImageLightboxProps) {
                 <img
                   src={image}
                   alt="Reference image"
-                  className="rounded-lg shadow-2xl select-none shrink-0 m-auto"
+                  className="rounded-xl shadow-2xl select-none shrink-0 m-auto"
                   draggable={false}
                   onClick={(e) => e.stopPropagation()}
                   style={

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { Stack } from "../../lib/stacks";
 import { Settings } from "../../types";
 import { AnimatePresence, m } from "framer-motion";
@@ -37,47 +36,49 @@ function UnifiedInputPane({
     }));
   }
 
+  const tabs: { id: InputTab; label: string; icon: React.ReactNode }[] = [
+    { id: "upload", label: "Upload", icon: <UploadIcon /> },
+    { id: "text",   label: "Text",   icon: <TextIcon /> },
+    { id: "import", label: "Import", icon: <ImportIcon /> },
+  ];
+
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <Tabs
-        value={activeTab}
-        onValueChange={(value) => setActiveTab(value as InputTab)}
-        className="w-full"
-      >
-        <TabsList className="grid w-full grid-cols-3 mb-5">
-          <TabsTrigger
-            value="upload"
-            className="flex items-center gap-2"
-            data-testid="tab-upload"
+      {/* Sliding pill tab bar */}
+      <div className="relative flex w-full rounded-full bg-gray-100 dark:bg-zinc-800 p-1 mb-5">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            data-testid={`tab-${tab.id}`}
+            onClick={() => setActiveTab(tab.id)}
+            className={`relative z-10 flex flex-1 items-center justify-center gap-2 rounded-full py-2 text-sm font-medium transition-colors duration-200 ${
+              activeTab === tab.id
+                ? "text-gray-900 dark:text-white"
+                : "text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200"
+            }`}
           >
-            <UploadIcon />
-            <span className="hidden sm:inline">Upload</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="text"
-            className="flex items-center gap-2"
-            data-testid="tab-text"
-          >
-            <TextIcon />
-            <span className="hidden sm:inline">Text</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="import"
-            className="flex items-center gap-2"
-            data-testid="tab-import"
-          >
-            <ImportIcon />
-            <span className="hidden sm:inline">Import</span>
-          </TabsTrigger>
-        </TabsList>
+            {activeTab === tab.id && (
+              <m.div
+                layoutId="tab-pill"
+                className="absolute inset-0 rounded-full bg-white dark:bg-zinc-700 shadow-sm"
+                transition={{ type: "spring", stiffness: 280, damping: 22, mass: 0.8 }}
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-2">
+              {tab.icon}
+              <span className="hidden sm:inline">{tab.label}</span>
+            </span>
+          </button>
+        ))}
+      </div>
 
         <AnimatePresence mode="wait">
           <m.div
             key={activeTab}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.15 }}
+            initial={{ opacity: 0, y: 14, filter: "blur(4px)", scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
+            exit={{ opacity: 0, y: -10, filter: "blur(3px)", scale: 0.99 }}
+            transition={{ duration: 0.28, ease: [0.12, 0.8, 0.32, 1] as const }}
           >
             {activeTab === "upload" && (
               <UploadTab
@@ -98,7 +99,6 @@ function UnifiedInputPane({
             )}
           </m.div>
         </AnimatePresence>
-      </Tabs>
     </div>
   );
 }

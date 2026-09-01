@@ -6,6 +6,74 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Disable text selection sitewide */
+* {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Re-enable in inputs, textareas, and code blocks */
+input, textarea, [contenteditable], code, pre, .allow-select {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Gemini-style color-cycling sparkle icon — no rotation */
+@keyframes sparkle-colors {
+  0%   { color: #6366f1; }
+  25%  { color: #8b5cf6; }
+  50%  { color: #3b82f6; }
+  75%  { color: #a78bfa; }
+  100% { color: #6366f1; }
+}
+
+.sparkle-icon {
+  animation: sparkle-colors 3s ease-in-out infinite;
+}
+
+/* Studio flowing background */
+@keyframes mesh-flow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.mesh-bg {
+  position: relative;
+}
+
+.mesh-orb-1, .mesh-orb-2, .mesh-orb-3 { display: none; }
+
+.mesh-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.18) 0%,
+    rgba(139, 92, 246, 0.14) 25%,
+    rgba(59, 130, 246, 0.10) 50%,
+    rgba(99, 102, 241, 0.16) 75%,
+    rgba(139, 92, 246, 0.18) 100%
+  );
+  background-size: 400% 400%;
+  animation: mesh-flow 10s ease-in-out infinite;
+}
+
+:is(.dark) .mesh-bg::before {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.14) 0%,
+    rgba(139, 92, 246, 0.11) 25%,
+    rgba(59, 130, 246, 0.08) 50%,
+    rgba(99, 102, 241, 0.13) 75%,
+    rgba(139, 92, 246, 0.14) 100%
+  );
+  background-size: 400% 400%;
+}
+
 /* Image Scanning animation */
 .scanning::after {
   content: "";
@@ -62,7 +130,7 @@ html {
     --input: 226 25% 90%;
     --ring: 234 89% 54%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
   }
   
   .dark body,
@@ -276,6 +344,23 @@ html {
   background-image: none !important;
   color: #fff !important;
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+}
+
+/* Studio action buttons — indigo gradient base, same as logo */
+.btn-studio-action {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+  color: #fff !important;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.3);
+}
+.btn-studio-action:hover:not(:disabled) {
+  opacity: 0.88;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.45);
+  transform: translateY(-1px);
+}
+.btn-studio-action:active:not(:disabled) {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 /* Outline hover for secondary buttons and capsules */

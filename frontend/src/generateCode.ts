@@ -4,6 +4,11 @@ import {
   APP_ERROR_WEB_SOCKET_CODE,
   USER_CLOSE_WEB_SOCKET_CODE,
 } from "./constants";
+import {
+  AgentToolResultData,
+  AgentToolStartData,
+  AgentWsPayloadData,
+} from "./components/commits/types";
 import { FullGenerationSettings } from "./types";
 
 const ERROR_MESSAGE =
@@ -26,7 +31,7 @@ type WebSocketResponse = {
     | "toolStart"
     | "toolResult";
   value?: string;
-  data?: any;
+  data?: AgentWsPayloadData;
   eventId?: string;
   variantIndex: number;
 };
@@ -41,8 +46,16 @@ interface CodeGenerationCallbacks {
   onVariantModels: (models: string[]) => void;
   onThinking: (content: string, variantIndex: number, eventId?: string) => void;
   onAssistant: (content: string, variantIndex: number, eventId?: string) => void;
-  onToolStart: (data: any, variantIndex: number, eventId?: string) => void;
-  onToolResult: (data: any, variantIndex: number, eventId?: string) => void;
+  onToolStart: (
+    data: AgentToolStartData | undefined,
+    variantIndex: number,
+    eventId?: string
+  ) => void;
+  onToolResult: (
+    data: AgentToolResultData | undefined,
+    variantIndex: number,
+    eventId?: string
+  ) => void;
   onCancel: (
     reason: "user_cancelled" | "request_failed" | "connection_error",
     errorMessage?: string

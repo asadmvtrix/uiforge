@@ -234,7 +234,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
 
   const dropzoneClassName = useMemo(() => {
     const base =
-      "flex flex-1 w-full min-h-[280px] flex-col items-center justify-center p-5 border border-dashed rounded-lg bg-white dark:bg-zinc-900/50 text-gray-500 dark:text-zinc-400 outline-none transition-all duration-200 cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-[0_0_0_1px_rgba(99,102,241,0.15)]";
+      "flex flex-1 w-full min-h-[240px] flex-col items-center justify-center p-8 border border-dashed rounded-2xl bg-white/60 dark:bg-zinc-900/40 backdrop-blur-sm text-gray-500 dark:text-zinc-400 outline-none transition-all duration-200 cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-[0_0_0_1px_rgba(99,102,241,0.15)]";
     if (isFocused) {
       return `${base} border-blue-500 bg-blue-50 dark:bg-blue-950/30`;
     }
@@ -323,10 +323,10 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
         <div className="flex flex-col items-center gap-4 w-full">
           <div className="relative w-full max-w-3xl">
             {uploadedInputMode === "video" ? (
-              <div className="relative rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-3">
+              <div className="relative rounded-xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-3">
                 <video
                   src={files[0]?.preview}
-                  className="w-full h-auto max-h-[400px] object-contain rounded-md border border-gray-100 dark:border-zinc-700"
+                  className="w-full h-auto max-h-[400px] object-contain rounded-xl border border-gray-100 dark:border-zinc-700"
                   controls
                 />
                 <button
@@ -340,7 +340,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
             ) : (
               <div
                 {...getRootProps({
-                  className: `relative rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4 ${
+                  className: `relative rounded-xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4 ${
                     isDragActive ? "ring-2 ring-blue-200 dark:ring-blue-800" : ""
                   }`,
                 })}
@@ -361,7 +361,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
                     ? "Limit reached"
                     : `${remainingSlots} remaining`}
                 </div>
-                <div className="mt-3 rounded-md border border-gray-100 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 p-2 overflow-hidden">
+                <div className="mt-3 rounded-xl border border-gray-100 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 p-2 overflow-hidden">
                   <div className="flex h-[280px] w-full items-center justify-center overflow-hidden rounded bg-white dark:bg-zinc-900">
                     {files[selectedIndex] && (
                       <img
@@ -378,7 +378,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
                       <button
                         type="button"
                         onClick={() => setSelectedIndex(index)}
-                        className={`h-14 w-14 rounded-md border overflow-hidden ${
+                        className={`h-14 w-14 rounded-xl border overflow-hidden ${
                           selectedIndex === index
                             ? "border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800"
                             : "border-gray-200 dark:border-zinc-700"
@@ -413,7 +413,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
                       open();
                     }}
                     disabled={isAtLimit}
-                    className={`h-14 w-14 rounded-md border border-dashed flex items-center justify-center flex-shrink-0 ${
+                    className={`h-14 w-14 rounded-xl border border-dashed flex items-center justify-center flex-shrink-0 ${
                       isAtLimit
                         ? "border-gray-200 dark:border-zinc-700 text-gray-300 dark:text-zinc-600 cursor-not-allowed"
                         : "border-gray-300 dark:border-zinc-600 text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 hover:border-gray-400 dark:hover:border-zinc-500"
@@ -427,7 +427,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
                   Drag and drop to add more screenshots
                 </div>
                 {isDragActive && (
-                  <div className="absolute inset-0 bg-blue-50/80 dark:bg-blue-950/80 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg flex items-center justify-center pointer-events-none">
+                  <div className="absolute inset-0 bg-blue-50/80 dark:bg-blue-950/80 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-xl flex items-center justify-center pointer-events-none">
                     <p className="text-blue-600 dark:text-blue-400 font-medium">Drop to add</p>
                   </div>
                 )}
@@ -453,7 +453,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
                 onChange={(e) => setTextPrompt(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Describe any specific requirements..."
-                className="w-full p-3 text-sm border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-zinc-600 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-zinc-500"
+                className="w-full p-3 text-sm border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-zinc-600 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-zinc-500"
                 rows={2}
               />
             </div>
@@ -469,7 +469,7 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
           <div className="flex flex-col items-center gap-1 w-full max-w-md">
             <Button
               onClick={handleGenerate}
-              className="w-full"
+              className="btn-studio-action w-full"
               size="lg"
               data-testid="upload-generate"
             >
@@ -481,12 +481,12 @@ function UploadTab({ doCreate, stack, setStack }: Props) {
       )}
 
       {!hasUploadedFile && (
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-4 mt-2">
           {screenRecorderState === ScreenRecorderState.INITIAL && (
-            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400">
-              <div className="h-px w-12 bg-gray-300 dark:bg-zinc-600" />
-              <span>or</span>
-              <div className="h-px w-12 bg-gray-300 dark:bg-zinc-600" />
+            <div className="flex items-center gap-3 w-full max-w-xs">
+              <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
+              <span className="text-xs text-gray-400 dark:text-zinc-600 font-medium">or</span>
+              <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
             </div>
           )}
           <ScreenRecorder

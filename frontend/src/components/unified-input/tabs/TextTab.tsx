@@ -60,35 +60,39 @@ function TextTab({ doCreateFromText, stack, setStack }: Props) {
     }
   };
 
-  const handleExampleClick = (example: string) => {
-    setText(example);
+  const handleRandomPrompt = () => {
+    const remaining = examples.filter((e) => e !== text);
+    const pool = remaining.length > 0 ? remaining : examples;
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    setText(pick);
     textareaRef.current?.focus();
   };
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <Textarea
-        ref={textareaRef}
-        rows={3}
-        placeholder="Describe the UI you want to create..."
-        className="w-full resize-none"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={handleKeyDown}
-        data-testid="text-input"
-      />
-
-      <div className="flex flex-wrap gap-1.5">
-        {examples.map((example, index) => (
-          <button
-            key={index}
-            onClick={() => handleExampleClick(example)}
-            className="text-[11px] px-2.5 py-1 rounded-md border border-gray-200 dark:border-zinc-800 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-zinc-600 transition-colors truncate max-w-[220px]"
-            title={example}
-          >
-            {example.length > 35 ? example.slice(0, 35) + "…" : example}
-          </button>
-        ))}
+      {/* Textarea with random-prompt button inside */}
+      <div className="relative">
+        <Textarea
+          ref={textareaRef}
+          rows={4}
+          placeholder="Describe the UI you want to create..."
+          className="w-full resize-none pr-10"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}
+          data-testid="text-input"
+        />
+        <button
+          type="button"
+          onClick={handleRandomPrompt}
+          title="Random prompt"
+          className="absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-xl text-indigo-400 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="sparkle-icon">
+            <path d="M12 0C12 0 14 8 14 10C14 12 12 24 12 24C12 24 10 12 10 10C10 8 12 0 12 0Z"/>
+            <path d="M0 12C0 12 8 10 10 10C12 10 24 12 24 12C24 12 12 14 10 14C8 14 0 12 0 12Z"/>
+          </svg>
+        </button>
       </div>
 
       <OutputSettingsSection
@@ -98,15 +102,15 @@ function TextTab({ doCreateFromText, stack, setStack }: Props) {
 
       <Button
         onClick={handleGenerate}
-        className="w-full"
+        className="btn-studio-action w-full max-w-xs mx-auto"
         size="lg"
         data-testid="text-generate"
       >
         Generate
       </Button>
 
-      <p className="text-xs text-gray-400 dark:text-zinc-500 text-center">
-        Press Cmd/Ctrl + Enter to generate
+      <p className="text-[11px] text-center text-gray-400 dark:text-zinc-600">
+        Press <kbd className="px-1 py-0.5 rounded border border-gray-200 dark:border-zinc-700 font-mono text-[10px]">⌘</kbd> + <kbd className="px-1 py-0.5 rounded border border-gray-200 dark:border-zinc-700 font-mono text-[10px]">↵</kbd> to generate
       </p>
     </div>
   );

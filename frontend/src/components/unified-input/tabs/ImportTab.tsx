@@ -64,7 +64,7 @@ function ImportTab({ importFromCode }: Props) {
     <div className="flex flex-col gap-4 w-full">
       <div
         {...getRootProps({
-          className: `rounded-lg ${
+          className: `rounded-xl ${
             isDraggingFile ? "ring-2 ring-blue-300 dark:ring-blue-700 ring-offset-2 dark:ring-offset-zinc-900" : ""
           }`,
         })}
@@ -90,7 +90,7 @@ function ImportTab({ importFromCode }: Props) {
 
       <Button
         onClick={doImport}
-        className="w-full"
+        className="btn-studio-action w-full max-w-xs mx-auto"
         size="lg"
         data-testid="import-submit"
       >

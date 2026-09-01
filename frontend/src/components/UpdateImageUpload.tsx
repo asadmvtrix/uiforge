@@ -33,7 +33,7 @@ export function UpdateImagePreview({ updateImages, setUpdateImages }: Props) {
       <div className="flex flex-wrap gap-2 py-1">
         {updateImages.map((image, index) => (
           <div key={index} className="relative flex-shrink-0 group overflow-visible">
-            <div className="flex h-14 w-14 items-center justify-center rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-gray-200 bg-white p-1 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
               <img
                 src={image}
                 alt={`Reference ${index + 1}`}
@@ -116,7 +116,7 @@ function UpdateImageUpload({ updateImages, setUpdateImages }: Props) {
         type="button"
         onClick={handleButtonClick}
         disabled={isAtLimit}
-        className={`p-2 rounded-lg transition-colors ${
+        className={`p-2 rounded-xl transition-colors ${
           isAtLimit
             ? "text-gray-300 dark:text-zinc-600 cursor-not-allowed"
             : "text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-800"

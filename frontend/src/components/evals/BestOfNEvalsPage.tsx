@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { HTTP_BACKEND_URL } from "../../config";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import EvalNavigation from "./EvalNavigation";
@@ -119,7 +119,7 @@ function BestOfNEvalsPage() {
   }, [currentComparisonIndex, evals]);
 
   // Get filtered comparisons indices
-  const getFilteredIndices = () => {
+  const filteredIndices = useMemo(() => {
     if (winnerFilter === "all") {
       return evals.map((_, index) => index);
     }
@@ -132,12 +132,10 @@ function BestOfNEvalsPage() {
         }
         return outcome === winnerFilter;
       });
-  };
-
-  const filteredIndices = getFilteredIndices();
+  }, [evals, outcomes, winnerFilter]);
 
   // Navigation functions
-  const goToPrevious = () => {
+  const goToPrevious = useCallback(() => {
     if (winnerFilter === "all") {
       setCurrentComparisonIndex((prev) => Math.max(0, prev - 1));
     } else {
@@ -148,9 +146,9 @@ function BestOfNEvalsPage() {
         setCurrentComparisonIndex(filteredIndices[currentFilteredIndex - 1]);
       }
     }
-  };
+  }, [winnerFilter, filteredIndices, currentComparisonIndex]);
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     if (winnerFilter === "all") {
       setCurrentComparisonIndex((prev) => Math.min(evals.length - 1, prev + 1));
     } else {
@@ -161,11 +159,19 @@ function BestOfNEvalsPage() {
         setCurrentComparisonIndex(filteredIndices[currentFilteredIndex + 1]);
       }
     }
-  };
+  }, [winnerFilter, filteredIndices, currentComparisonIndex, evals.length]);
 
   const goToComparison = (index: number) => {
     setCurrentComparisonIndex(Math.max(0, Math.min(evals.length - 1, index)));
   };
+
+  const handleVote = useCallback((index: number, outcome: Outcome) => {
+    setOutcomes((prev) => {
+      const newOutcomes = [...prev];
+      newOutcomes[index] = outcome;
+      return newOutcomes;
+    });
+  }, []);
 
   // Update current index when filter changes
   useEffect(() => {
@@ -210,7 +216,7 @@ function BestOfNEvalsPage() {
         case "6":
         case "7":
         case "8":
-        case "9":
+        case "9": {
           e.preventDefault();
           const modelIndex = parseInt(e.key) - 1;
           if (modelIndex < folderNames.length) {
@@ -223,6 +229,7 @@ function BestOfNEvalsPage() {
             }
           }
           break;
+        }
         case "t":
           e.preventDefault();
           handleVote(currentComparisonIndex, "tie");
@@ -236,7 +243,14 @@ function BestOfNEvalsPage() {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [currentComparisonIndex, evals.length, folderNames.length]);
+  }, [
+    currentComparisonIndex,
+    evals.length,
+    folderNames.length,
+    goToPrevious,
+    goToNext,
+    handleVote,
+  ]);
 
   // Add/remove folder input fields
   const addFolderInput = () => {
@@ -308,12 +322,6 @@ function BestOfNEvalsPage() {
     }
   };
 
-  const handleVote = (index: number, outcome: Outcome) => {
-    const newOutcomes = [...outcomes];
-    newOutcomes[index] = outcome;
-    setOutcomes(newOutcomes);
-  };
-
   const stats = calculateStats();
   const currentEval = evals[currentComparisonIndex];
 
@@ -367,7 +375,7 @@ function BestOfNEvalsPage() {
                     console.error("Error fetching folders:", error);
                   }
                 }}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-2"
+                className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-xl text-sm transition-colors flex items-center gap-2"
                 title="Refresh folder list"
               >
                 <svg
@@ -399,7 +407,7 @@ function BestOfNEvalsPage() {
                         onChange={(e) =>
                           updateFolderPath(index, e.target.value)
                         }
-                        className="w-full px-4 py-3 pr-10 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none transition-colors text-sm appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 pr-10 rounded-xl bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none transition-colors text-sm appearance-none cursor-pointer"
                       >
                         <option value="">Select a folder...</option>
                         {availableFolders.map((folder) => (
@@ -431,7 +439,7 @@ function BestOfNEvalsPage() {
                     {index > 0 && (
                       <button
                         onClick={() => removeFolderInput(index)}
-                        className="bg-red-500 hover:bg-red-600 px-3 py-3 rounded-lg transition-colors"
+                        className="bg-red-500 hover:bg-red-600 px-3 py-3 rounded-xl transition-colors"
                         title="Remove model"
                       >
                         <svg
@@ -456,7 +464,7 @@ function BestOfNEvalsPage() {
             <div className="flex gap-3 justify-center mt-6">
               <button
                 onClick={addFolderInput}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
               >
                 <svg
                   className="w-4 h-4"
@@ -476,7 +484,7 @@ function BestOfNEvalsPage() {
               <button
                 onClick={loadEvals}
                 disabled={isLoading || folderPaths.some((p) => !p)}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-8 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-8 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
               >
                 {isLoading ? (
                   <>
@@ -539,7 +547,7 @@ function BestOfNEvalsPage() {
                     setCurrentComparisonIndex(0);
                     setCurrentModelIndex(0);
                   }}
-                  className="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1 rounded-lg text-sm transition-colors"
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1 rounded-xl text-sm transition-colors"
                   title="Back To Setup"
                 >
                   <svg
@@ -557,7 +565,7 @@ function BestOfNEvalsPage() {
                   </svg>
                 </button>
 
-                <div className="flex items-center bg-gray-700 rounded-lg">
+                <div className="flex items-center bg-gray-700 rounded-xl">
                   <button
                     onClick={goToPrevious}
                     disabled={currentComparisonIndex === 0}
@@ -640,7 +648,7 @@ function BestOfNEvalsPage() {
 
               {/* Center: Progress and Results */}
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 bg-gray-700/50 px-3 py-1 rounded-lg">
+                <div className="flex items-center gap-2 bg-gray-700/50 px-3 py-1 rounded-xl">
                   <span className="text-xs text-gray-400 font-medium">
                     Progress
                   </span>
@@ -661,7 +669,7 @@ function BestOfNEvalsPage() {
 
                 <button
                   onClick={() => setShowResults(!showResults)}
-                  className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm text-gray-200 transition-colors"
+                  className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 hover:bg-gray-600 rounded-xl text-sm text-gray-200 transition-colors"
                 >
                   <svg
                     className="w-4 h-4"
@@ -705,7 +713,7 @@ function BestOfNEvalsPage() {
                       setWinnerFilter(parseInt(value));
                     }
                   }}
-                  className="px-2 py-1 bg-gray-700 text-white text-xs rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="px-2 py-1 bg-gray-700 text-white text-xs rounded-xl border border-gray-600 focus:border-blue-500 focus:outline-none"
                 >
                   <option value="all">All Comparisons</option>
                   {folderNames.map((name, index) => (
@@ -783,7 +791,7 @@ function BestOfNEvalsPage() {
           <div className="flex gap-4 p-3 max-w-full">
             {/* Fixed Reference Image */}
             <div className="flex-shrink-0 w-[380px]">
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div className="bg-gray-100 text-gray-700 px-3 py-1.5 border-b border-gray-200">
                   <h3 className="font-medium text-xs flex items-center gap-1">
                     <svg
@@ -899,14 +907,14 @@ function BestOfNEvalsPage() {
                       </button>
                     </DialogTrigger>
                     <DialogContent className="w-[95vw] max-w-[95vw] h-[95vh] max-h-[95vh] bg-gray-900">
-                      <div className="absolute top-4 left-4 bg-black/80 backdrop-blur text-white px-3 py-2 rounded-lg z-10">
+                      <div className="absolute top-4 left-4 bg-black/80 backdrop-blur text-white px-3 py-2 rounded-xl z-10">
                         <span className="font-semibold">
                           {folderNames[currentModelIndex]}
                         </span>
                       </div>
                       <iframe
                         srcDoc={selectedHtml}
-                        className="w-full h-full rounded-lg"
+                        className="w-full h-full rounded-xl"
                       ></iframe>
                     </DialogContent>
                   </Dialog>

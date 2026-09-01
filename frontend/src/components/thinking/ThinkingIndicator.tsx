@@ -68,7 +68,7 @@ function ThinkingIndicator() {
 
   return (
     <div
-      className={`rounded-md mb-2 ${
+      className={`rounded-xl mb-2 ${
         isActive
           ? "border-2 border-green-400 dark:border-green-500"
           : "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700"

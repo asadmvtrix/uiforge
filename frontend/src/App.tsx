@@ -6,7 +6,6 @@ import { USER_CLOSE_WEB_SOCKET_CODE } from "./constants";
 import toast from "react-hot-toast";
 import { nanoid } from "nanoid";
 import { Stack } from "./lib/stacks";
-import { CodeGenerationModel } from "./lib/models";
 import useBrowserTabIndicator from "./hooks/useBrowserTabIndicator";
 import { LuChevronLeft } from "react-icons/lu";
 import {
@@ -17,7 +16,6 @@ import {
   registerAssetIds,
   toRequestHistory,
 } from "./lib/prompt-history";
-// import TipLink from "./components/messages/TipLink";
 import { useAppStore } from "./store/app-store";
 import { useProjectStore } from "./store/project-store";
 import { removeHighlight } from "./components/select-and-edit/utils";
@@ -86,7 +84,6 @@ function App() {
       isImageGenerationEnabled: true,
       editorTheme: EditorTheme.COBALT,
       generatedCodeConfig: Stack.HTML_TAILWIND,
-      codeGenerationModel: CodeGenerationModel.CLAUDE_4_5_OPUS_2025_11_01,
     },
     "setting"
   );
@@ -631,7 +628,7 @@ function App() {
 
   return (
     <div
-      className={`bg-white dark:bg-zinc-950 text-gray-900 dark:text-white ${
+      className={`mesh-bg bg-white dark:bg-zinc-950 text-gray-900 dark:text-white ${
         appState === AppState.CODING || appState === AppState.CODE_READY
           ? "flex h-dvh flex-col overflow-hidden lg:block lg:h-screen"
           : "min-h-screen"
@@ -645,7 +642,7 @@ function App() {
           isHistoryOpen={isHistoryOpen}
           isEditorOpen={!isHistoryOpen && !isSettingsOpen}
           isSettingsOpen={isSettingsOpen}
-          showHistory={isCodingOrReady}
+          showHistory={true}
           showEditor={isCodingOrReady}
           isDark={appTheme === AppTheme.DARK || (appTheme === AppTheme.SYSTEM && window.matchMedia("(prefers-color-scheme: dark)").matches)}
           onToggleHistory={() => {
@@ -665,7 +662,7 @@ function App() {
             setMobilePane("preview");
           }}
           onOpenSettings={() => {
-            setIsSettingsOpen(true);
+            setIsSettingsOpen((prev) => !prev);
             setIsHistoryOpen(false);
           }}
           onToggleTheme={() => {
@@ -677,13 +674,13 @@ function App() {
 
       {isCodingOrReady && !isSettingsOpen && (
         <div className="border-b border-gray-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-zinc-900 lg:hidden">
-          <div className="grid grid-cols-2 rounded-lg bg-gray-100 p-0.5 dark:bg-zinc-800">
+          <div className="grid grid-cols-2 rounded-xl bg-gray-100 p-0.5 dark:bg-zinc-800">
             <button
               onClick={() => {
                 setIsHistoryOpen(false);
                 setMobilePane("preview");
               }}
-              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+              className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                 mobilePane === "preview"
                   ? "bg-white text-gray-900 shadow-sm dark:bg-zinc-700 dark:text-white"
                   : "text-gray-500 dark:text-zinc-400"
@@ -693,7 +690,7 @@ function App() {
             </button>
             <button
               onClick={() => setMobilePane("chat")}
-              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+              className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                 mobilePane === "chat"
                   ? "bg-white text-gray-900 shadow-sm dark:bg-zinc-700 dark:text-white"
                   : "text-gray-500 dark:text-zinc-400"
@@ -709,10 +706,10 @@ function App() {
       <AnimatePresence>
       {showContentPanel && !isSettingsOpen && (
         <m.div
-          initial={{ x: -16, opacity: 0 }}
+          initial={{ x: -300, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: -16, opacity: 0 }}
-          transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+          exit={{ x: -300, opacity: 0 }}
+          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }}
           className={`border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 dark:text-white lg:fixed lg:inset-y-0 lg:left-12 lg:z-40 lg:flex lg:w-[25rem] lg:flex-col lg:border-b-0 lg:border-r ${
             showMobileChatPane ? "block" : "hidden lg:flex"
           }`}
@@ -721,10 +718,10 @@ function App() {
             {isHistoryOpen ? (
               <m.div
                 key="history"
-                initial={{ opacity: 0, x: 8 }}
+                initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -8 }}
-                transition={{ duration: 0.2 }}
+                exit={{ opacity: 0, x: 40 }}
+                transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] as const }}
                 className="flex-1 overflow-y-auto sidebar-scrollbar-stable px-4"
               >
                 <div className="mt-3">
@@ -744,10 +741,10 @@ function App() {
             ) : (
               <m.div
                 key="sidebar"
-                initial={{ opacity: 0, x: -8 }}
+                initial={{ opacity: 0, x: -40 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 8 }}
-                transition={{ duration: 0.2 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] as const }}
                 className="flex flex-1 flex-col"
               >
                 {(appState === AppState.CODING ||
@@ -771,6 +768,7 @@ function App() {
       </AnimatePresence>
 
       <main
+        onClick={() => { if (isSettingsOpen) setIsSettingsOpen(false); }}
         className={`${
           isSettingsOpen
             ? "flex flex-1 min-h-0 flex-col lg:h-full lg:pl-12"
@@ -788,6 +786,7 @@ function App() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
             className="flex flex-1 flex-col min-h-0"
+            onClick={(e) => e.stopPropagation()}
           >
             <SettingsTab
               settings={settings}

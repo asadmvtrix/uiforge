@@ -191,13 +191,13 @@ function OpenAIInputComparePage() {
                       <div className="text-xs uppercase tracking-[0.18em] text-emerald-300/80">
                         Left Summary
                       </div>
-                      <pre className="mt-2 whitespace-pre-wrap break-words rounded-lg bg-zinc-950 p-3 font-mono text-xs text-zinc-100">
+                      <pre className="mt-2 whitespace-pre-wrap break-words rounded-xl bg-zinc-950 p-3 font-mono text-xs text-zinc-100">
                         {result.difference.left_summary}
                       </pre>
                       <div className="mt-3 text-xs uppercase tracking-[0.18em] text-emerald-300/80">
                         Left Value
                       </div>
-                      <pre className="mt-2 max-h-[320px] overflow-auto whitespace-pre-wrap break-words rounded-lg bg-zinc-950 p-3 font-mono text-xs text-zinc-100">
+                      <pre className="mt-2 max-h-[320px] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-zinc-950 p-3 font-mono text-xs text-zinc-100">
                         {formatJson(result.difference.left_value)}
                       </pre>
                     </div>
@@ -206,13 +206,13 @@ function OpenAIInputComparePage() {
                       <div className="text-xs uppercase tracking-[0.18em] text-sky-300/80">
                         Right Summary
                       </div>
-                      <pre className="mt-2 whitespace-pre-wrap break-words rounded-lg bg-zinc-950 p-3 font-mono text-xs text-zinc-100">
+                      <pre className="mt-2 whitespace-pre-wrap break-words rounded-xl bg-zinc-950 p-3 font-mono text-xs text-zinc-100">
                         {result.difference.right_summary}
                       </pre>
                       <div className="mt-3 text-xs uppercase tracking-[0.18em] text-sky-300/80">
                         Right Value
                       </div>
-                      <pre className="mt-2 max-h-[320px] overflow-auto whitespace-pre-wrap break-words rounded-lg bg-zinc-950 p-3 font-mono text-xs text-zinc-100">
+                      <pre className="mt-2 max-h-[320px] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-zinc-950 p-3 font-mono text-xs text-zinc-100">
                         {formatJson(result.difference.right_value)}
                       </pre>
                     </div>

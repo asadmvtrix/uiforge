@@ -31,10 +31,10 @@ function IconStrip({
   const navigate = useNavigate();
 
   const btn = (active: boolean) =>
-    `flex h-8 w-8 items-center justify-center rounded-md transition-colors duration-100 ${
+    `flex h-8 w-8 items-center justify-center rounded-xl transition-all duration-200 ${
       active
-        ? "text-gray-900 dark:text-white bg-gray-100 dark:bg-zinc-800"
-        : "text-gray-400 dark:text-zinc-500 hover:text-gray-900 dark:hover:text-white"
+        ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50"
+        : "text-gray-400 dark:text-zinc-500 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
     }`;
 
   return (
@@ -44,7 +44,7 @@ function IconStrip({
       <button
         onClick={() => navigate("/")}
         title="Home"
-        className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors lg:mb-4"
+        className="flex h-8 w-8 items-center justify-center rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-all duration-200 lg:mb-4"
       >
         <img src="/favicon/main.png" alt="" className="h-4 w-4 dark:invert" />
       </button>

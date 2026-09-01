@@ -239,9 +239,10 @@ function Sidebar({
   }, [updateInstruction, autoResize]);
 
   // Reset error expanded state when variant changes
+  const headSelectedVariantIndex = commits[head || ""]?.selectedVariantIndex;
   useEffect(() => {
     setIsErrorExpanded(false);
-  }, [head, commits[head || ""]?.selectedVariantIndex]);
+  }, [head, headSelectedVariantIndex]);
 
   // Reset prompt expanded state when commit changes and detect clamping
   useEffect(() => {
@@ -319,7 +320,7 @@ function Sidebar({
                     <button
                       key={`${image.slice(0, 40)}-${index}`}
                       onClick={() => setLightboxImage(image)}
-                      className="shrink-0 cursor-zoom-in rounded-lg border border-gray-200 bg-white p-1 dark:border-zinc-700 dark:bg-zinc-900 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
+                      className="shrink-0 cursor-zoom-in rounded-xl border border-gray-200 bg-white p-1 dark:border-zinc-700 dark:bg-zinc-900 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
                     >
                       <img
                         src={image}
@@ -337,7 +338,7 @@ function Sidebar({
                     <video
                       key={`${video.slice(0, 40)}-${index}`}
                       src={video}
-                      className="w-full rounded-lg border border-gray-200 dark:border-zinc-700"
+                      className="w-full rounded-xl border border-gray-200 dark:border-zinc-700"
                       controls
                       preload="metadata"
                     />
@@ -357,7 +358,7 @@ function Sidebar({
           !isSelectedVariantComplete &&
           !isSelectedVariantError &&
           isSlowGeminiModel(selectedVariant?.model) && (
-          <div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+          <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
             Slow, high quality model. May take 5-10 mins on some images/videos.
           </div>
         )}
@@ -373,13 +374,13 @@ function Sidebar({
             <div className="mt-4 flex gap-2">
               <button
                 onClick={onOpenVersions}
-                className="rounded-lg border border-gray-300 dark:border-zinc-600 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+                className="rounded-xl border border-gray-300 dark:border-zinc-600 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
               >
                 All Versions
               </button>
               <button
                 onClick={() => latestCommitHash && setHead(latestCommitHash)}
-                className="rounded-lg bg-gray-900 dark:bg-white px-4 py-2 text-sm font-medium text-white dark:text-black hover:bg-black dark:hover:bg-gray-200 transition-colors"
+                className="rounded-xl bg-gray-900 dark:bg-white px-4 py-2 text-sm font-medium text-white dark:text-black hover:bg-black dark:hover:bg-gray-200 transition-colors"
               >
                 View Latest
               </button>
@@ -404,7 +405,8 @@ function Sidebar({
           <div className="flex justify-end mb-3">
             <button
               onClick={regenerate}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+              data-testid="regenerate"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
             >
               <LuRefreshCw className="w-3.5 h-3.5" />
               Retry
@@ -426,7 +428,7 @@ function Sidebar({
 
         {/* Show error message when selected option has an error */}
         {isSelectedVariantError && (
-          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-md p-3 mb-2">
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-3 mb-2">
             <div className="text-red-800 dark:text-red-200 text-sm">
               <div className="font-medium mb-1">
                 This option failed to generate because
@@ -546,7 +548,7 @@ function Sidebar({
                   {showSelectAndEditFeature && (
                     <button
                       onClick={toggleInSelectAndEditMode}
-                      className={`rounded-lg p-2 transition-colors ${
+                      className={`rounded-xl p-2 transition-colors ${
                         inSelectAndEditMode
                           ? "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
                           : "text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"

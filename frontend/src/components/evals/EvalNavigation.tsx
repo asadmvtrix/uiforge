@@ -50,7 +50,7 @@ function EvalNavigation() {
       </div>
       
       <Link
-        to="/"
+        to="/studio"
         className="text-sm text-gray-300 hover:text-white transition-colors"
       >
         ← Back To App

@@ -3,14 +3,14 @@ FROM node:22-bullseye-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and yarn.lock
+# Copy dependency manifests
 COPY package.json yarn.lock /app/
 
 # Set the environment variable to skip Puppeteer download
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 
-# Install dependencies
-RUN yarn install
+# Install the package manager and dependencies exactly as locked
+RUN corepack enable && yarn install --frozen-lockfile
 
 # Copy the current directory contents into the container at /app
 COPY ./ /app/

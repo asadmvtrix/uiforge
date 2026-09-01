@@ -2,6 +2,7 @@
   "name": "uiforge",
   "private": true,
   "version": "0.0.0",
+  "packageManager": "yarn@1.22.22",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -80,6 +81,6 @@
     "vitest": "^1.0.1"
   },
   "engines": {
-    "node": ">=14.18.0"
+    "node": ">=22"
   }
 }

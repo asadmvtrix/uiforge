@@ -289,7 +289,7 @@ function RunEvalsPage() {
       
       <div className="container mx-auto px-4 py-6">
         {/* Unified Header with Configuration Summary */}
-        <div className="mb-6 bg-white rounded-lg border border-gray-200 shadow-sm p-4 max-w-5xl mx-auto">
+        <div className="mb-6 bg-white rounded-xl border border-gray-200 shadow-sm p-4 max-w-5xl mx-auto">
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap justify-between items-center">
               <h1 className="text-2xl font-bold">Run Evaluations</h1>
@@ -304,7 +304,7 @@ function RunEvalsPage() {
             </div>
 
             {diffMode && (
-              <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
                 Diff mode enabled: only input files missing outputs in today's model folders will run. Existing outputs are skipped and never overwritten.
               </div>
             )}
@@ -335,7 +335,7 @@ function RunEvalsPage() {
             </div>
             
             {showPaths && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-gray-600 mt-2 bg-gray-50 p-2 rounded-md">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-gray-600 mt-2 bg-gray-50 p-2 rounded-xl">
                 <div>
                   <span className="font-medium">Input path:</span>
                   <code className="ml-2 bg-gray-100 px-2 py-0.5 rounded">
@@ -395,7 +395,7 @@ function RunEvalsPage() {
                         Re-run failures
                       </Button>
                     </div>
-                    <div className="max-h-40 overflow-y-auto rounded-md border border-red-100 bg-red-50/40">
+                    <div className="max-h-40 overflow-y-auto rounded-xl border border-red-100 bg-red-50/40">
                       <ul className="divide-y divide-red-100">
                         {failedTaskDetails.map((task, index) => (
                           <li key={`${task.model}-${task.inputFile}-${index}`} className="px-3 py-2 text-xs">
@@ -422,12 +422,12 @@ function RunEvalsPage() {
         {/* Selection Controls */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {/* Model Selection Section */}
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
             <div className="border-b border-gray-200 px-4 py-3 bg-gray-50 rounded-t-lg">
               <h2 className="font-medium">Select Models</h2>
             </div>
             <div className="p-3">
-              <div className="border rounded-md max-h-[300px] overflow-y-auto">
+              <div className="border rounded-xl max-h-[300px] overflow-y-auto">
                 <div className="grid grid-cols-1 divide-y divide-gray-100">
                   {models.map((model) => (
                     <div
@@ -443,7 +443,7 @@ function RunEvalsPage() {
                       {selectedModels.includes(model) ? (
                         <BsCheckLg className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />
                       ) : (
-                        <div className="h-3.5 w-3.5 border rounded-sm flex-shrink-0" />
+                        <div className="h-3.5 w-3.5 border rounded-lg flex-shrink-0" />
                       )}
                     </div>
                   ))}
@@ -480,7 +480,7 @@ function RunEvalsPage() {
           </div>
 
           {/* Stack Selection Section */}
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
             <div className="border-b border-gray-200 px-4 py-3 bg-gray-50 rounded-t-lg">
               <h2 className="font-medium">Select Stack</h2>
             </div>
@@ -488,7 +488,7 @@ function RunEvalsPage() {
               <select
                 value={selectedStack}
                 onChange={(e) => setSelectedStack(e.target.value)}
-                className="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full py-2 px-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               >
                 {stacks.map((stack) => (
                   <option key={stack} value={stack}>
@@ -509,7 +509,7 @@ function RunEvalsPage() {
           </div>
 
           {/* Input Files Section */}
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm lg:col-span-1 md:col-span-2">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm lg:col-span-1 md:col-span-2">
             <div className="border-b border-gray-200 px-4 py-3 bg-gray-50 rounded-t-lg">
               <h2 className="font-medium">Select Input Files</h2>
             </div>

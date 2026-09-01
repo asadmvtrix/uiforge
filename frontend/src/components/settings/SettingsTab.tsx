@@ -91,7 +91,7 @@ function SettingsTab({ settings, setSettings, appTheme, setAppTheme, onBack }: P
         <div className="mb-6 flex items-center gap-3">
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+            className="flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
             aria-label="Go back"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -106,7 +106,7 @@ function SettingsTab({ settings, setSettings, appTheme, setAppTheme, onBack }: P
 
         <div className="mx-auto max-w-lg space-y-6">
           {/* Theme */}
-          <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
+          <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
             <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
               <h2 className="text-sm font-medium text-gray-900 dark:text-white">
                 Theme
@@ -172,7 +172,7 @@ function SettingsTab({ settings, setSettings, appTheme, setAppTheme, onBack }: P
           </div>
 
           {/* API Keys */}
-          <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
+          <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
             <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
               <h2 className="text-sm font-medium text-gray-900 dark:text-white">
                 API Keys
@@ -180,7 +180,7 @@ function SettingsTab({ settings, setSettings, appTheme, setAppTheme, onBack }: P
             </div>
             <div className="p-4 space-y-4">
               <p className="text-xs text-gray-500 dark:text-zinc-400">
-                Stored only in your browser. Overrides server .env config.
+                Stored only in your browser.
               </p>
 
               {/* Saved keys */}
@@ -189,7 +189,7 @@ function SettingsTab({ settings, setSettings, appTheme, setAppTheme, onBack }: P
                   {savedKeys.map(k => (
                     <div
                       key={k.type}
-                      className="flex items-center justify-between rounded-lg border border-gray-100 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-900/50 px-3 py-2"
+                      className="flex items-center justify-between rounded-xl border border-gray-100 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-900/50 px-3 py-2"
                     >
                       <div className="flex items-center gap-2 min-w-0">
                         <span className="text-xs font-medium text-gray-600 dark:text-zinc-300 shrink-0">
@@ -215,15 +215,18 @@ function SettingsTab({ settings, setSettings, appTheme, setAppTheme, onBack }: P
 
               {/* Add key row */}
               <div className="flex gap-2">
-                <select
-                  value={selectedKeyType}
-                  onChange={e => setSelectedKeyType(e.target.value as ApiKeyType)}
-                  className="shrink-0 rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-2 text-xs text-gray-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  {API_KEY_OPTIONS.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
+                <Select value={selectedKeyType} onValueChange={v => setSelectedKeyType(v as ApiKeyType)}>
+                  <SelectTrigger className="shrink-0 w-36 text-xs">
+                    {API_KEY_OPTIONS.find(o => o.value === selectedKeyType)?.label ?? ""}
+                  </SelectTrigger>
+                  <SelectContent>
+                    {API_KEY_OPTIONS.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Input
                   className="flex-1 text-xs font-mono"
                   placeholder={API_KEY_OPTIONS.find(o => o.value === selectedKeyType)?.placeholder ?? ""}
@@ -235,7 +238,7 @@ function SettingsTab({ settings, setSettings, appTheme, setAppTheme, onBack }: P
                 <button
                   onClick={handleSaveKey}
                   disabled={!pendingKeyValue.trim()}
-                  className="shrink-0 rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="shrink-0 rounded-xl bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   aria-label="Save key"
                 >
                   +
@@ -245,7 +248,7 @@ function SettingsTab({ settings, setSettings, appTheme, setAppTheme, onBack }: P
           </div>
 
           {/* Image Generation */}
-          <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
+          <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
             <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
               <h2 className="text-sm font-medium text-gray-900 dark:text-white">
                 Image Generation
