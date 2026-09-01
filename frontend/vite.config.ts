@@ -17,53 +17,11 @@ export default ({ mode }) => {
         "@": path.resolve(__dirname, "./src"),
       },
     },
+    // Avoid aggressive manualChunks — splitting react/zustand/vendor into
+    // custom bundles caused a TDZ crash in production:
+    // "Cannot access '$c' before initialization" (blank white screen).
     build: {
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (!id.includes("node_modules")) return;
-            if (
-              id.includes("@codemirror") ||
-              id.includes("@lezer") ||
-              id.includes("/codemirror/")
-            ) {
-              return "codemirror";
-            }
-            if (
-              id.includes("react-syntax-highlighter") ||
-              id.includes("thememirror")
-            ) {
-              return "code-highlighting";
-            }
-            if (id.includes("framer-motion")) return "motion";
-            if (id.includes("@radix-ui")) return "radix";
-            if (id.includes("html2canvas")) return "screenshot";
-            if (id.includes("react-icons")) return "icons";
-            if (
-              id.includes("/react/") ||
-              id.includes("/react-dom/") ||
-              id.includes("/react-router") ||
-              id.includes("/scheduler/") ||
-              id.includes("/zustand/")
-            ) {
-              return "react";
-            }
-            if (
-              id.includes("react-markdown") ||
-              id.includes("/remark-") ||
-              id.includes("/rehype-") ||
-              id.includes("/unified/") ||
-              id.includes("/vfile") ||
-              id.includes("/mdast-") ||
-              id.includes("/hast-") ||
-              id.includes("/micromark")
-            ) {
-              return "markdown";
-            }
-            return "vendor";
-          },
-        },
-      },
+      chunkSizeWarningLimit: 1200,
     },
   });
 };
